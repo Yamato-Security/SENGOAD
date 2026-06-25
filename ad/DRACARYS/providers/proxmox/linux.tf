@@ -1,6 +1,6 @@
 "lx01" = {
   name               = "LX01"
-  desc               = "LX01 - RYUEN"
+  desc               = "LX01 - DRACARYS"
   cores              = 2
   memory             = 4096
   clone              = "Ubuntu_2404_x64"

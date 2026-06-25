@@ -14,6 +14,13 @@ SENGOAD re-skins the lab's *Game of Thrones* names to the Japanese **Sengoku Jid
 - 🗾 [GOAD → SENGOAD mapping (English)](./docs/SENGOAD_mapping_EN.md)
 - 🇯🇵 [GOAD → SENGOAD 対応表（日本語）](./docs/SENGOAD_mapping_JA.md)
 
+**Reskinning a lab?** Run the offline preflight to catch broken references, `domain_name`/folder mismatches, host/inventory drift and bad YAML *before* standing up any VMs (stdlib-only, exits non-zero on failure — handy for CI):
+
+```bash
+python3 scripts/preflight.py            # all labs + extensions
+python3 scripts/preflight.py SENGOAD    # one lab
+```
+
 ## Description
 SENGOAD is a Sengoku-jidai reskin of GOAD — a pentest Active Directory lab.
 The purpose of this lab is to give pentesters a vulnerable Active directory environment ready to use to practice usual attack techniques.

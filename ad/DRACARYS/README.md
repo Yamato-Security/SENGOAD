@@ -1,8 +1,8 @@
-# RYUEN
+# DRACARYS
 
-![RYUEN](../../docs/img/dracarys_logo.png)
+![DRACARYS](../../docs/img/dracarys_logo.png)
 
-- RYUEN is written as a training challenge where GOAD was written as a lab with a maximum of vulns.
+- DRACARYS is written as a training challenge where GOAD was written as a lab with a maximum of vulns.
 - You should find your way in to get domain admin on the domain ryuen.lab
 - Using vagrant user is prohibited of course ^^
 - Starting point is on lx01 : `<ip_range>.12`
@@ -22,14 +22,14 @@ ansible-galaxy install -r requirements.yml
 - Install :
 
 ```bash
-./sengoad.sh -t install -l RYUEN -p virtualbox
+./sengoad.sh -t install -l DRACARYS -p virtualbox
 ```
 
 or
 
 ```bash
 ./sengoad.sh
-> set_lab RYUEN
+> set_lab DRACARYS
 > set_provider <your_provider>
 > set_iprange 192.168.56  # select the one you want and you can skip this with ludus
 > install

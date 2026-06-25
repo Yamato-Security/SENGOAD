@@ -8,7 +8,7 @@ lx01 ansible_host={{ip_range}}.12  dict_key=lx01 ansible_connection=ssh ansible_
 
 [all:vars]
 ; domain_name : folder inside ad/
-domain_name=RYUEN
+domain_name=DRACARYS
 
 ; winrm connection (windows)
 ansible_winrm_transport=ntlm

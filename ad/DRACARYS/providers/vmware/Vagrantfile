@@ -1,6 +1,6 @@
 boxes = 
 [
-  { :name => "RYUEN-DC01", 
+  { :name => "DRACARYS-DC01", 
     :ip => "{{ip_range}}.10", 
     :box => "GOAD/WindowsServer2025", 
     :box_version => "2026.02.09", 
@@ -8,7 +8,7 @@ boxes =
     :cpus => 2, 
     :mem => 3000
   },
-  { :name => "RYUEN-SRV01", 
+  { :name => "DRACARYS-SRV01", 
     :ip => "{{ip_range}}.11", 
     :box => "GOAD/WindowsServer2025", 
     :box_version => "2026.02.09", 
@@ -16,7 +16,7 @@ boxes =
     :cpus => 2, 
     :mem => 3000
   },
-  { :name => "RYUEN-LX01",
+  { :name => "DRACARYS-LX01",
     :ip => "{{ip_range}}.12",
     :box => "bento/ubuntu-24.04",
     :box_version => "202510.26.0",
