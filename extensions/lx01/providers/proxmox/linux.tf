@@ -1,6 +1,6 @@
 "lx01" = {
   name               = "lx01"
-  desc               = "lx01 GOAD"
+  desc               = "lx01 SENGOAD"
   cores              = 1
   memory             = 1024
   clone              = "Ubuntu_2204_x64"

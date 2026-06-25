@@ -1,13 +1,13 @@
 {
     "name": "exchange",
-    "description": "Add an exchange to goad lab",
+    "description": "Add an exchange to sengoad lab",
     "machines": [
-        "srv01 (the-eyrie.sevenkingdoms.local)"
+        "srv01 (gifu.yamato.local)"
     ],
     "compatibility": [
-        "GOAD",
-        "GOAD-Light",
-        "GOAD-Mini"
+        "SENGOAD",
+        "SENGOAD-Light",
+        "SENGOAD-Mini"
     ],
     "impact": "Modify the ad schema and add a computer (warning the exchange machine is really heavy)"
 }

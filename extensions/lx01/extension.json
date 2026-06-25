@@ -5,9 +5,9 @@
         "lx01"
     ],
     "compatibility": [
-        "GOAD",
-        "GOAD-Light",
-        "GOAD-Mini"
+        "SENGOAD",
+        "SENGOAD-Light",
+        "SENGOAD-Mini"
     ],
     "impact": "none"
 }

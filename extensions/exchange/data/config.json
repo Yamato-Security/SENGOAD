@@ -2,56 +2,58 @@
     "lab_extension": {
         "hosts": {
             "srv01": {
-                "hostname": "the-eyrie",
+                "hostname": "gifu",
                 "type": "server",
                 "local_admin_password": "FP.xh5Fk9Z1c",
-                "domain": "sevenkingdoms.local",
-                "path": "DC=sevenkingdoms,DC=local",
+                "domain": "yamato.local",
+                "path": "DC=yamato,DC=local",
                 "local_groups": {
                     "Administrators": [
-                        "sevenkingdoms\\lysa.arryn"
+                        "yamato\\naotora"
                     ],
                     "Remote Desktop Users": [
-                        "sevenkingdoms\\Arryn"
+                        "yamato\\Ii"
                     ]
                 }
             }
         },
         "domains": {
-            "sevenkingdoms.local": {
+            "yamato.local": {
                 "organisation_units": {},
                 "groups": {
                     "universal": {},
                     "global": {
-                        "Arryn": {
-                            "managed_by": "lysa.arryn",
-                            "path": "OU=Vale,DC=sevenkingdoms,DC=local"
+                        "Ii": {
+                            "managed_by": "naotora",
+                            "path": "OU=Shinano,DC=yamato,DC=local"
                         }
                     },
                     "domainlocal": {}
                 },
                 "users": {
-                    "lysa.arryn": {
-                        "firstname": "Lysa",
-                        "surname": "Arryn",
-                        "password": "rob1nIsMyHeart",
-                        "city": "The Eyries",
-                        "description": "Lysa Arryn",
+                    "naotora": {
+                        "firstname": "直虎",
+                        "surname": "井伊",
+                        "password": "Naom@saIsMyHeart",
+                        "city": "岐阜",
+                        "description": "井伊直虎",
                         "groups": [
-                            "Arryn"
+                            "Ii"
                         ],
-                        "path": "OU=Vale,DC=sevenkingdoms,DC=local"
+                        "path": "OU=Shinano,DC=yamato,DC=local",
+                        "displayname": "井伊直虎"
                     },
-                    "robin.arryn": {
-                        "firstname": "Robin",
-                        "surname": "Arryn",
-                        "password": "mommy",
-                        "city": "The Eyries",
-                        "description": "Robin Arryn",
+                    "ii.naomasa": {
+                        "firstname": "直政",
+                        "surname": "井伊",
+                        "password": "haha",
+                        "city": "岐阜",
+                        "description": "井伊直政",
                         "groups": [
-                            "Arryn"
+                            "Ii"
                         ],
-                        "path": "OU=Vale,DC=sevenkingdoms,DC=local"
+                        "path": "OU=Shinano,DC=yamato,DC=local",
+                        "displayname": "井伊直政"
                     }
                 }
             }

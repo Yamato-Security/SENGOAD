@@ -1,6 +1,6 @@
 "guacamole" = {
   name               = "guacamole"
-  desc               = "guacamole GOAD"
+  desc               = "guacamole SENGOAD"
   cores              = 2
   memory             = 4096
   clone              = "Ubuntu_2204_x64"

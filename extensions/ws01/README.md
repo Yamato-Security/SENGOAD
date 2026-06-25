@@ -1,20 +1,20 @@
 # WS01 extension (Workstation 01)
 
 - Extension Name: ws01
-- Description: Add a Windows 10 workstation to the lab GOAD or GOAD Light in the domain sevenkingdoms.local
+- Description: Add a Windows 10 workstation to the lab SENGOAD or SENGOAD-Light in the domain yamato.local
 - Machine name : {{lab_name}}-WS01
 - Compatible with labs :
-  - GOAD
-  - GOAD-Light
+  - SENGOAD
+  - SENGOAD-Light
 
 - Lab infos:
-  - hostname: casterlyrock 
+  - hostname: azuchi 
   - Users:
     - Administrators :
-      - tywin.lannister
-      - jaime.lannister
+      - oda.nobunaga
+      - oda.nobutada
     - RDP Users:
-      - Lannister group
+      - Oda group
 
 - Features :
   - run_as_ppl
