@@ -1,0 +1,1 @@
+Set-ADUser -Identity "sanada.yukimura" -ServicePrincipalNames @{Add='HTTP/chojoserver'}

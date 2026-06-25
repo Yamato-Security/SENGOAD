@@ -1,0 +1,1 @@
+netdom trust yamato.local /d:aki.local /enablesidhistory:yes

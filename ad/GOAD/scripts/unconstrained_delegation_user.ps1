@@ -1,0 +1,1 @@
+Get-ADUser -Identity "matsuhime" | Set-ADAccountControl -TrustedForDelegation $true

@@ -1,0 +1,208 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "ryujin",
+                "type": "dc",
+                "local_admin_password": "8dCsfT-DJjgS3xdcp",
+                "domain": "ryuen.lab",
+                "path": "DC=ryuen,DC=lab",
+                "local_groups": {
+                    "Administrators": [
+                        "ryuen\\Orochi"
+                    ]
+                },
+                "scripts": [
+                    "set_spn.ps1",
+                    "wsman_kerb.ps1"
+                ],
+                "security": [
+                    "directory",
+                    "files",
+                    "ldaps"
+                ],
+                "security_vars": {
+                    "directory": {
+                        "setup": "c:\\setup"
+                    },
+                    "files": {
+                        "certificate": {
+                            "src": "dc01/ldaps.pfx",
+                            "dest": "c:\\setup\\ldaps.pfx"
+                        }
+                    },
+                    "ldaps": {
+                        "certificate": {
+                            "pfx": "c:\\setup\\ldaps.pfx",
+                            "cert_password": "MyStr@ngeCertP@ssword123"
+                        }
+                    }
+                },
+                "vulns": [
+                    "files",
+                    "enable_credssp_client",
+                    "schedule"
+                ],
+                "vulns_vars": {
+                    "files": {
+                        "bot_keepass": {
+                            "src": "dc01/keepass_bot.ps1",
+                            "dest": "c:\\keepass_bot.ps1"
+                        }
+                    },
+                    "schedule": {
+                        "bot": {
+                            "name": "keepass_bot",
+                            "cmd": "powershell c:\\keepass_bot.ps1",
+                            "interval": "PT1M",
+                            "multiple_instances": "3"
+                        }
+                    }
+                }
+            },
+            "srv01": {
+                "hostname": "mizuchi",
+                "type": "server",
+                "local_admin_password": "NgtkgtIAs75cKV+Pu",
+                "domain": "ryuen.lab",
+                "path": "DC=ryuen,DC=lab",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": [
+                        "ryuen\\Seiryu"
+                    ],
+                    "Remote Desktop Users": [
+                        "ryuen\\Seiryu"
+                    ]
+                },
+                "scripts": [],
+                "vulns": [
+                    "files",
+                    "enable_credssp_server",
+                    "schedule"
+                ],
+                "vulns_vars": {
+                    "files": {
+                        "vault": {
+                            "src": "srv01/vault.kdbx",
+                            "dest": "c:\\vault.kdbx"
+                        },
+                        "bot_ssh": {
+                            "src": "srv01/bot_ssh.ps1",
+                            "dest": "c:\\bot_ssh.ps1"
+                        }
+                    },
+                    "schedule": {
+                        "bot": {
+                            "name": "bot_ssh",
+                            "cmd": "powershell c:\\bot_ssh.ps1",
+                            "interval": "PT1M"
+                        }
+                    }
+                }
+            },
+            "lx01": {
+                "hostname": "wani",
+                "type": "server",
+                "os": "linux",
+                "local_admin_password": "HGLXaxQSP@ssw_rd$",
+                "domain": "ryuen.lab",
+                "path": "DC=ryuen,DC=lab",
+                "local_groups": {
+                    "sudoers": [
+                        "LinuxAdmins"
+                    ],
+                    "ssh": [
+                        "LinuxAdmins",
+                        "LinuxUsers"
+                    ]
+                },
+                "security": [],
+                "security_vars": {},
+                "scripts": []
+            }
+        },
+        "domains": {
+            "ryuen.lab": {
+                "dc": "dc01",
+                "domain_password": "8dCsfT-DJjgS3xdcp",
+                "netbios_name": "RYUEN",
+                "organisation_units": {},
+                "groups": {
+                    "universal": {},
+                    "global": {
+                        "LinuxAdmins": {
+                            "managed_by": "orochi",
+                            "path": "CN=Users,DC=ryuen,DC=lab"
+                        },
+                        "LinuxUsers": {
+                            "managed_by": "orochi",
+                            "path": "CN=Users,DC=ryuen,DC=lab"
+                        }
+                    },
+                    "domainlocal": {}
+                },
+                "multi_domain_groups_member": {},
+                "acls": {
+                    "WriteSPN_hakuryu_mizuchi": {
+                        "for": "hakuryu",
+                        "to": "mizuchi$",
+                        "right": "Ext-Write-SPN",
+                        "inheritance": "None"
+                    }
+                },
+                "users": {
+                    "orochi": {
+                        "firstname": "オロチ",
+                        "surname": "-",
+                        "password": "sUIjHxs1i0yxZsGBreh0",
+                        "city": "-",
+                        "description": "Domain admin",
+                        "groups": [
+                            "LinuxAdmins",
+                            "Domain Admins"
+                        ],
+                        "path": "CN=Users,DC=ryuen,DC=lab",
+                        "displayname": "オロチ"
+                    },
+                    "seiryu": {
+                        "firstname": "青竜",
+                        "surname": "-",
+                        "password": "ufsmcvDaFz1uEqzAtaiL",
+                        "city": "-",
+                        "description": "青竜",
+                        "groups": [
+                            "LinuxAdmins"
+                        ],
+                        "path": "CN=Users,DC=ryuen,DC=lab",
+                        "displayname": "青竜"
+                    },
+                    "hakuryu": {
+                        "firstname": "白竜",
+                        "surname": "-",
+                        "password": "aLHtz1WvIVmeV4Zh4CDE",
+                        "city": "-",
+                        "description": "白竜",
+                        "groups": [
+                            "LinuxUsers"
+                        ],
+                        "path": "CN=Users,DC=ryuen,DC=lab",
+                        "displayname": "白竜"
+                    },
+                    "kinryu": {
+                        "firstname": "金竜",
+                        "surname": "-",
+                        "password": "BSno5DP4tjJ4jIu8is3B",
+                        "city": "-",
+                        "description": "glpi service account",
+                        "groups": [
+                            "LinuxUsers"
+                        ],
+                        "path": "CN=Users,DC=ryuen,DC=lab",
+                        "displayname": "金竜"
+                    }
+                }
+            }
+        }
+    }
+}

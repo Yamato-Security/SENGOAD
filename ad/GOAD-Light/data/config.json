@@ -1,0 +1,684 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "osaka",
+                "type": "dc",
+                "local_admin_password": "8dCT-DJjgScp",
+                "domain": "yamato.local",
+                "path": "DC=yamato,DC=local",
+                "local_groups": {
+                    "Administrators": [
+                        "yamato\\toyotomi.hideyoshi",
+                        "yamato\\oichi",
+                        "yamato\\Ryuki"
+                    ],
+                    "Remote Desktop Users": [
+                        "yamato\\Gotairo",
+                        "yamato\\Toyotomi"
+                    ]
+                },
+                "scripts": [],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files",
+                    "adcs_templates"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "setup": "c:\\setup"
+                    },
+                    "files": {
+                        "template": {
+                            "src": "dc01/templates/",
+                            "dest": "C:\\setup\\"
+                        }
+                    },
+                    "adcs_templates": {
+                        "ESC1": {
+                            "template_name": "ESC1",
+                            "template_file": "C:\\setup\\ESC1.json"
+                        }
+                    }
+                },
+                "security": [
+                    "account_is_sensitive"
+                ],
+                "security_vars": {
+                    "account_is_sensitive": {
+                        "renly": {
+                            "account": "toyotomi.hidenaga"
+                        }
+                    }
+                }
+            },
+            "dc02": {
+                "hostname": "kofu",
+                "type": "dc",
+                "local_admin_password": "NgtI75cKV+Pu",
+                "domain": "kai.yamato.local",
+                "path": "DC=kai,DC=yamato,DC=local",
+                "local_groups": {
+                    "Administrators": [
+                        "kai\\takeda.shingen",
+                        "kai\\sanjo",
+                        "kai\\takeda.katsuyori"
+                    ],
+                    "Remote Desktop Users": [
+                        "kai\\Takeda"
+                    ]
+                },
+                "scripts": [
+                    "asrep_roasting.ps1",
+                    "constrained_delegation_use_any.ps1",
+                    "constrained_delegation_kerb_only.ps1",
+                    "ntlm_relay.ps1",
+                    "responder.ps1",
+                    "gpo_abuse.ps1",
+                    "rdp_scheduler.ps1"
+                ],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "credentials",
+                    "autologon",
+                    "files",
+                    "ntlmdowngrade",
+                    "enable_llmnr",
+                    "enable_nbt-ns",
+                    "shares"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "setup": "c:\\setup"
+                    },
+                    "credentials": {
+                        "TERMSRV/shirakawa": {
+                            "username": "kai\\takeda.katsuyori",
+                            "secret": "ookami",
+                            "runas": "kai\\takeda.katsuyori",
+                            "runas_password": "ookami"
+                        }
+                    },
+                    "autologon": {
+                        "takeda.katsuyori": {
+                            "username": "kai\\takeda.katsuyori",
+                            "password": "ookami"
+                        }
+                    },
+                    "files": {
+                        "rdp": {
+                            "src": "dc02/bot_rdp.ps1",
+                            "dest": "c:\\setup\\bot_rdp.ps1"
+                        },
+                        "sysvol_fake_script": {
+                            "src": "dc02/sysvol_scripts/script.ps1",
+                            "dest": "C:\\Windows\\SYSVOL\\domain\\scripts\\script.ps1"
+                        },
+                        "sysvol_secret": {
+                            "src": "dc02/sysvol_scripts/secret.ps1",
+                            "dest": "C:\\Windows\\SYSVOL\\domain\\scripts\\secret.ps1"
+                        }
+                    }
+                }
+            },
+            "srv02": {
+                "hostname": "shirakawa",
+                "type": "server",
+                "local_admin_password": "NgtI75cKV+Pu",
+                "domain": "kai.yamato.local",
+                "path": "DC=kai,DC=yamato,DC=local",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": [
+                        "kai\\honda.tadakatsu"
+                    ],
+                    "Remote Desktop Users": [
+                        "kai\\Yoban",
+                        "kai\\Honda",
+                        "kai\\Takeda"
+                    ]
+                },
+                "scripts": [],
+                "vulns": [
+                    "directory",
+                    "disable_firewall",
+                    "openshares",
+                    "files",
+                    "permissions"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "shares": "C:\\shares",
+                        "all": "C:\\shares\\all"
+                    },
+                    "files": {
+                        "website": {
+                            "src": "srv02/wwwroot",
+                            "dest": "C:\\inetpub\\"
+                        },
+                        "letter_in_shares": {
+                            "src": "srv02/all/kikuhime.txt",
+                            "dest": "C:\\shares\\all\\kikuhime.txt"
+                        }
+                    },
+                    "permissions": {
+                        "IIS_IUSRS_upload": {
+                            "path": "C:\\inetpub\\wwwroot\\upload",
+                            "user": "IIS_IUSRS",
+                            "rights": "FullControl"
+                        }
+                    }
+                },
+                "mssql": {
+                    "sa_password": "Sup1_sa_P@ssw0rd!",
+                    "svcaccount": "sql_svc",
+                    "sysadmins": [
+                        "KAI\\sanada.yukimura"
+                    ],
+                    "executeaslogin": {
+                        "KAI\\yamamoto.kansuke": "sa",
+                        "KAI\\takeda.yoshinobu": "KAI\\sanada.yukimura"
+                    },
+                    "executeasuser": {
+                        "arya_master_dbo": {
+                            "user": "KAI\\kikuhime",
+                            "db": "master",
+                            "impersonate": "dbo"
+                        },
+                        "arya_dbms_dbo": {
+                            "user": "KAI\\kikuhime",
+                            "db": "msdb",
+                            "impersonate": "dbo"
+                        }
+                    }
+                }
+            }
+        },
+        "domains": {
+            "kai.yamato.local": {
+                "dc": "dc02",
+                "domain_password": "NgtI75cKV+Pu",
+                "netbios_name": "KAI",
+                "trust": "",
+                "laps_path": "OU=Laps,DC=kai,DC=yamato,DC=local",
+                "organisation_units": {},
+                "groups": {
+                    "universal": {},
+                    "global": {
+                        "Takeda": {
+                            "managed_by": "takeda.shingen",
+                            "path": "CN=Users,DC=kai,DC=yamato,DC=local"
+                        },
+                        "Yoban": {
+                            "managed_by": "honda.tadakatsu",
+                            "path": "CN=Users,DC=kai,DC=yamato,DC=local"
+                        },
+                        "Honda": {
+                            "managed_by": "honda.tadakatsu",
+                            "path": "CN=Users,DC=kai,DC=yamato,DC=local"
+                        }
+                    },
+                    "domainlocal": {
+                        "UmiNoKanata": {
+                            "path": "CN=Users,DC=kai,DC=yamato,DC=local"
+                        }
+                    }
+                },
+                "multi_domain_groups_member": {},
+                "acls": {
+                    "anonymous_rpc": {
+                        "for": "NT AUTHORITY\\ANONYMOUS LOGON",
+                        "to": "DC=kai,DC=yamato,DC=local",
+                        "right": "ReadProperty",
+                        "inheritance": "All"
+                    },
+                    "anonymous_rpc2": {
+                        "for": "NT AUTHORITY\\ANONYMOUS LOGON",
+                        "to": "DC=kai,DC=yamato,DC=local",
+                        "right": "GenericExecute",
+                        "inheritance": "All"
+                    }
+                },
+                "users": {
+                    "kikuhime": {
+                        "firstname": "菊姫",
+                        "surname": "-",
+                        "password": "Harimaru",
+                        "city": "甲府",
+                        "description": "菊姫（信玄の娘）",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "菊姫"
+                    },
+                    "takeda.shingen": {
+                        "firstname": "信玄",
+                        "surname": "武田",
+                        "password": "Furinkazan!",
+                        "city": "大坂",
+                        "description": "武田信玄",
+                        "groups": [
+                            "Takeda",
+                            "Domain Admins"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "武田信玄"
+                    },
+                    "sanjo": {
+                        "firstname": "三条の方",
+                        "surname": "-",
+                        "password": "katsuyorimatsuhimekikuhimeyoshinobunobukatsu",
+                        "city": "大坂",
+                        "description": "三条の方（信玄の正室）",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "三条の方"
+                    },
+                    "takeda.katsuyori": {
+                        "firstname": "勝頼",
+                        "surname": "武田",
+                        "password": "ookami",
+                        "city": "甲府",
+                        "description": "武田勝頼",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "武田勝頼"
+                    },
+                    "matsuhime": {
+                        "firstname": "松姫",
+                        "surname": "-",
+                        "password": "345ertdfg",
+                        "city": "甲府",
+                        "description": "松姫（信玄の娘）",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "spns": [
+                            "HTTP/gifu.kai.yamato.local"
+                        ],
+                        "displayname": "松姫"
+                    },
+                    "takeda.yoshinobu": {
+                        "firstname": "義信",
+                        "surname": "武田",
+                        "password": "miraigamieru",
+                        "city": "甲府",
+                        "description": "武田義信",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "武田義信"
+                    },
+                    "takeda.nobukatsu": {
+                        "firstname": "信勝",
+                        "surname": "武田",
+                        "password": "Fuyu2022",
+                        "city": "甲府",
+                        "description": "武田信勝",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "武田信勝"
+                    },
+                    "benkei": {
+                        "firstname": "弁慶",
+                        "surname": "-",
+                        "password": "benkei",
+                        "city": "甲府",
+                        "description": "弁慶",
+                        "groups": [
+                            "Takeda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "弁慶"
+                    },
+                    "sanada.yukimura": {
+                        "firstname": "幸村",
+                        "surname": "真田",
+                        "password": "Rokumonsen",
+                        "city": "白河",
+                        "description": "真田幸村",
+                        "groups": [
+                            "Takeda",
+                            "Yoban"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "spns": [
+                            "HTTP/chojo.kai.yamato.local"
+                        ],
+                        "displayname": "真田幸村"
+                    },
+                    "yamamoto.kansuke": {
+                        "firstname": "勘助",
+                        "surname": "山本",
+                        "password": "Muramasa",
+                        "city": "白河",
+                        "description": "山本勘助 (Password : Muramasa)",
+                        "groups": [
+                            "Yoban"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "山本勘助"
+                    },
+                    "honda.tadakatsu": {
+                        "firstname": "忠勝",
+                        "surname": "本多",
+                        "password": "_Tonb0g1ri_",
+                        "city": "白河",
+                        "description": "本多忠勝",
+                        "groups": [
+                            "Yoban",
+                            "Honda"
+                        ],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "displayname": "本多忠勝"
+                    },
+                    "sql_svc": {
+                        "firstname": "sql",
+                        "surname": "service",
+                        "password": "KerberoastNanteMuri1",
+                        "city": "-",
+                        "description": "sql service",
+                        "groups": [],
+                        "path": "CN=Users,DC=kai,DC=yamato,DC=local",
+                        "spns": [
+                            "MSSQLSvc/shirakawa.kai.yamato.local:1433",
+                            "MSSQLSvc/shirakawa.kai.yamato.local"
+                        ]
+                    }
+                }
+            },
+            "yamato.local": {
+                "dc": "dc01",
+                "domain_password": "8dCT-DJjgScp",
+                "netbios_name": "YAMATO",
+                "trust": "",
+                "laps_path": "OU=Laps,DC=yamato,DC=local",
+                "organisation_units": {
+                    "Shinano": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Awaji": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Mino": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Yamashiro": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Sagami": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Omi": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Owari": {
+                        "path": "DC=yamato,DC=local"
+                    },
+                    "Satsuma": {
+                        "path": "DC=yamato,DC=local"
+                    }
+                },
+                "groups": {
+                    "universal": {},
+                    "global": {
+                        "Oda": {
+                            "managed_by": "oda.nobunaga",
+                            "path": "OU=Omi,DC=yamato,DC=local"
+                        },
+                        "Toyotomi": {
+                            "managed_by": "toyotomi.hideyoshi",
+                            "path": "OU=Sagami,DC=yamato,DC=local"
+                        },
+                        "Gotairo": {
+                            "path": "OU=Yamashiro,DC=yamato,DC=local"
+                        },
+                        "Ryujo": {
+                            "path": "OU=Yamashiro,DC=yamato,DC=local"
+                        },
+                        "Hatamoto": {
+                            "path": "OU=Yamashiro,DC=yamato,DC=local"
+                        },
+                        "Ryuki": {
+                            "path": "OU=Yamashiro,DC=yamato,DC=local"
+                        }
+                    },
+                    "domainlocal": {
+                        "KaikyoNoKanata": {
+                            "path": "CN=Users,DC=yamato,DC=local"
+                        }
+                    }
+                },
+                "multi_domain_groups_member": {},
+                "acls": {
+                    "forcechangepassword_tywin_jaime": {
+                        "for": "oda.nobunaga",
+                        "to": "oda.nobutada",
+                        "right": "Ext-User-Force-Change-Password",
+                        "inheritance": "None"
+                    },
+                    "GenericWrite_on_user_jaimie_joffrey": {
+                        "for": "oda.nobutada",
+                        "to": "toyotomi.hideyori",
+                        "right": "GenericWrite",
+                        "inheritance": "None"
+                    },
+                    "Writedacl_joffrey_tyron": {
+                        "for": "toyotomi.hideyori",
+                        "to": "oda.nobutaka",
+                        "right": "WriteDacl",
+                        "inheritance": "None"
+                    },
+                    "self-self-membership-on-group_tyron_small_council": {
+                        "for": "oda.nobutaka",
+                        "to": "Gotairo",
+                        "right": "Ext-Self-Self-Membership",
+                        "inheritance": "None"
+                    },
+                    "addmember_smallcouncil_Ryujo": {
+                        "for": "Gotairo",
+                        "to": "Ryujo",
+                        "right": "Ext-Write-Self-Membership",
+                        "inheritance": "All"
+                    },
+                    "write_owner_dragonstone_kingsguard": {
+                        "for": "Ryujo",
+                        "to": "Hatamoto",
+                        "right": "WriteOwner",
+                        "inheritance": "None"
+                    },
+                    "GenericAll_kingsguard_stanis": {
+                        "for": "Hatamoto",
+                        "to": "toyotomi.hidetsugu",
+                        "right": "GenericAll",
+                        "inheritance": "None"
+                    },
+                    "GenericAll_stanis_dc": {
+                        "for": "toyotomi.hidetsugu",
+                        "to": "osaka$",
+                        "right": "GenericAll",
+                        "inheritance": "None"
+                    },
+                    "GenericAll_group_acrrosdom_dc": {
+                        "for": "KaikyoNoKanata",
+                        "to": "osaka$",
+                        "right": "GenericAll",
+                        "inheritance": "None"
+                    },
+                    "GenericAll_varys_domadmin": {
+                        "for": "hattori.hanzo",
+                        "to": "Domain Admins",
+                        "right": "GenericAll",
+                        "inheritance": "None"
+                    },
+                    "GenericAll_varys_domadmin_holder": {
+                        "for": "hattori.hanzo",
+                        "to": "CN=AdminSDHolder,CN=System,DC=yamato,DC=local",
+                        "right": "GenericAll",
+                        "inheritance": "None"
+                    },
+                    "WriteDACL_renly_Yamashiro": {
+                        "for": "toyotomi.hidenaga",
+                        "to": "OU=Yamashiro,DC=yamato,DC=local",
+                        "right": "WriteDacl",
+                        "inheritance": "None"
+                    }
+                },
+                "users": {
+                    "oda.nobunaga": {
+                        "firstname": "信長",
+                        "surname": "織田",
+                        "password": "TenkaFubu135",
+                        "city": "安土",
+                        "description": "織田信長",
+                        "groups": [
+                            "Oda"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "織田信長"
+                    },
+                    "oda.nobutada": {
+                        "firstname": "信忠",
+                        "surname": "織田",
+                        "password": "oichi",
+                        "city": "大坂",
+                        "description": "織田信忠",
+                        "groups": [
+                            "Oda"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "織田信忠"
+                    },
+                    "oichi": {
+                        "firstname": "お市",
+                        "surname": "-",
+                        "password": "il0venobutada",
+                        "city": "大坂",
+                        "description": "お市の方",
+                        "groups": [
+                            "Oda",
+                            "Toyotomi",
+                            "Domain Admins",
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "お市の方"
+                    },
+                    "oda.nobutaka": {
+                        "firstname": "信孝",
+                        "surname": "織田",
+                        "password": "Sak3&Onna",
+                        "city": "大坂",
+                        "description": "織田信孝",
+                        "groups": [
+                            "Oda"
+                        ],
+                        "path": "OU=Omi,DC=yamato,DC=local",
+                        "displayname": "織田信孝"
+                    },
+                    "toyotomi.hideyoshi": {
+                        "firstname": "秀吉",
+                        "surname": "豊臣",
+                        "password": "WareKosoTenka",
+                        "city": "大坂",
+                        "description": "豊臣秀吉",
+                        "groups": [
+                            "Toyotomi",
+                            "Domain Admins",
+                            "Gotairo",
+                            "Protected Users"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "豊臣秀吉"
+                    },
+                    "toyotomi.hideyori": {
+                        "firstname": "秀頼",
+                        "surname": "豊臣",
+                        "password": "1Zankoku!",
+                        "city": "大坂",
+                        "description": "豊臣秀頼",
+                        "groups": [
+                            "Toyotomi",
+                            "Oda"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "豊臣秀頼"
+                    },
+                    "toyotomi.hidenaga": {
+                        "firstname": "秀長",
+                        "surname": "豊臣",
+                        "password": "naomori",
+                        "city": "大坂",
+                        "description": "豊臣秀長",
+                        "groups": [
+                            "Toyotomi",
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "豊臣秀長"
+                    },
+                    "toyotomi.hidetsugu": {
+                        "firstname": "秀次",
+                        "surname": "豊臣",
+                        "password": "Ryuj0u!",
+                        "city": "大坂",
+                        "description": "豊臣秀次",
+                        "groups": [
+                            "Toyotomi",
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "豊臣秀次"
+                    },
+                    "akechi.mitsuhide": {
+                        "firstname": "光秀",
+                        "surname": "明智",
+                        "password": "@Honnoji@",
+                        "city": "大坂",
+                        "description": "明智光秀",
+                        "groups": [
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "明智光秀"
+                    },
+                    "hattori.hanzo": {
+                        "firstname": "半蔵",
+                        "surname": "服部",
+                        "password": "_Sh1nobi_$",
+                        "city": "大坂",
+                        "description": "服部半蔵",
+                        "groups": [
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "服部半蔵"
+                    },
+                    "sen.rikyu": {
+                        "firstname": "利休",
+                        "surname": "千",
+                        "password": "IchigoIchie",
+                        "city": "大坂",
+                        "description": "千利休",
+                        "groups": [
+                            "Gotairo"
+                        ],
+                        "path": "OU=Yamashiro,DC=yamato,DC=local",
+                        "displayname": "千利休"
+                    }
+                }
+            }
+        }
+    }
+}

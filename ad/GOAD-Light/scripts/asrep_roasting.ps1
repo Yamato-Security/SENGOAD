@@ -1,0 +1,1 @@
+Get-ADUser -Identity "takeda.yoshinobu" | Set-ADAccountControl -DoesNotRequirePreAuth:$true
