@@ -12,7 +12,7 @@ variable "config_ws01_ext" {
 
   default = {
     "ws01" = {
-       name               = "GOAD-WS01"
+       name               = "SENGOAD-WS01"
        desc               = "WS01 - windows 10 - 192.168.10.31"
        cores              = 2
        memory             = 4096

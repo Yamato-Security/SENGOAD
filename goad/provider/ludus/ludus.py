@@ -39,7 +39,7 @@ class LudusProvider(Provider):
         super().__init__(lab_name)
         self.api_key = config.get_value('ludus', 'ludus_api_key', 'not_set')
         self.use_impersonation = config.get_value('ludus', 'use_impersonation', 'no') == 'yes'
-        self.lab_user = 'GOAD'
+        self.lab_user = 'SENGOAD'
         self.major_version = _get_ludus_major_version(config)
 
     def _user_command(self, args):

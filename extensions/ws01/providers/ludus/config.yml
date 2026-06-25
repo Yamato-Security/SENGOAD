@@ -1,4 +1,4 @@
-  - vm_name: "{{ range_id }}-GOAD-WS01"
+  - vm_name: "{{ range_id }}-SENGOAD-WS01"
     hostname: "{{ range_id }}-WS01"
     template: win10-22h2-x64-enterprise-template
     vlan: 10

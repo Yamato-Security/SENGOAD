@@ -1,5 +1,5 @@
 ludus:
-  - vm_name: "{{ range_id }}-GOAD-DC01"
+  - vm_name: "{{ range_id }}-SENGOAD-DC01"
     hostname: "{{ range_id }}-DC01"
     template: win2019-server-x64-template
     vlan: 10
