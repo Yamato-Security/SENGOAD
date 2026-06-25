@@ -7,6 +7,13 @@
 
 :bookmark: Documentation : [https://orange-cyberdefense.github.io/GOAD/](https://orange-cyberdefense.github.io/GOAD/)
 
+## 🏯 SENGOAD — Sengoku Jidai reskin
+
+SENGOAD re-skins the lab's *Game of Thrones* names to the Japanese **Sengoku Jidai** (Warring States) period — famous clans and warlords (Oda, Toyotomi, Takeda, Mōri, …) with **kanji display names**. See the full name correspondence:
+
+- 🗾 [GOAD → SENGOAD mapping (English)](./docs/SENGOAD_mapping_EN.md)
+- 🇯🇵 [GOAD → SENGOAD 対応表（日本語）](./docs/SENGOAD_mapping_JA.md)
+
 ## Description
 GOAD is a pentest active directory LAB project.
 The purpose of this lab is to give pentesters a vulnerable Active directory environment ready to use to practice usual attack techniques.
