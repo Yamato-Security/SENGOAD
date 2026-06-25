@@ -9,11 +9,11 @@ class GoadPath:
     @staticmethod
     def get_config_path():
         home = str(Path.home())
-        return home + sep + '.goad'
+        return home + sep + '.sengoad'
 
     @staticmethod
     def get_config_file():
-        return GoadPath.get_config_path() + sep + 'goad.ini'
+        return GoadPath.get_config_path() + sep + 'sengoad.ini'
 
     @staticmethod
     def get_global_inventory_path():

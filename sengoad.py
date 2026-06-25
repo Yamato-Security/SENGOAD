@@ -455,11 +455,11 @@ class Goad(cmd.Cmd):
 
 def parse_args():
     task_help = 'tasks available : (install/start/stop/restart/destroy/status/show)'
-    parser = argparse.ArgumentParser(prog='goad.py',
-                                     description='Description : goad lab management console.',
+    parser = argparse.ArgumentParser(prog='sengoad.py',
+                                     description='Description : sengoad lab management console.',
                                      epilog=show_help(), formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-t", "--task", help=f"{task_help}", required=False)
-    parser.add_argument("-l", "--lab", help="lab to use (default: GOAD)", default='GOAD', required=False)
+    parser.add_argument("-l", "--lab", help="lab to use (default: SENGOAD)", default='SENGOAD', required=False)
     parser.add_argument("-p", "--provider", help="provider to use (default: vmware)", default='vmware', required=False)
     parser.add_argument("-ip", "--ip_range", help="ip range to use (default: 192.168.56)", default='', required=False)
     parser.add_argument("-m", "--method", help="deploy method to use (default: local)", default='local', required=False)
@@ -475,8 +475,8 @@ def parse_args():
 def show_help():
     return '''
 Example :
- - Install GOAD on virtualbox : python3 goad.py -t install -l GOAD -p virtualbox
- - Launch GOAD interactive console : python3 goad.py
+ - Install SENGOAD on virtualbox : python3 sengoad.py -t install -l SENGOAD -p virtualbox
+ - Launch SENGOAD interactive console : python3 sengoad.py
 '''
 
 

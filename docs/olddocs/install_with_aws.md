@@ -34,9 +34,9 @@ Other configurable variables are listed in the `variable.tf` file.
 
 ```bash
 # Check prerequisites
-./goad.sh -t check -l GOAD -p aws
+./sengoad.sh -t check -l SENGOAD -p aws
 # Install
-./goad.sh -t install -l GOAD -p aws
+./sengoad.sh -t install -l SENGOAD -p aws
 ```
 
 ![aws check](./img/aws_check.png)

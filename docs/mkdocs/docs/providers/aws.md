@@ -49,7 +49,7 @@ aws configure
 - The goad configuration file as some options for aws:
 
 ```
-# ~/.goad/goad.ini
+# ~/.sengoad/sengoad.ini
 ...
 [aws]
 aws_region = eu-west-3
@@ -84,9 +84,9 @@ aws ec2 describe-images \
 
 ```bash
 # check prerequisites
-./goad.sh -t check -l GOAD -p aws
+./sengoad.sh -t check -l SENGOAD -p aws
 # Install
-./goad.sh -t install -l GOAD -p aws
+./sengoad.sh -t install -l SENGOAD -p aws
 ```
 
 or from the interactive console :

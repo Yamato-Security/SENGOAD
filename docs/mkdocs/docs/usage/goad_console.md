@@ -9,7 +9,7 @@ Launch goad interactive mode
 To enter interactive mode just launch goad without the `-t` parameter
 
 ``` bash
-./goad.sh
+./sengoad.sh
 ```
 
 ## No lab instance selected
@@ -141,7 +141,7 @@ set_provisioning <provisioning_method>
 - local : launch ansible with subprocess (default for vbox/vmware/proxmox/ludus)
 - runner : launch ansible with ansible runner
 - remote : launch ansible through ssh using jumpbox (default for azure/aws)
-- docker : user the docker container to launch ansible (docker container must be built first `sudo docker build -t goadansible .`)
+- docker : user the docker container to launch ansible (docker container must be built first `sudo docker build -t sengoadansible .`)
 
 ### set_ip_range
 

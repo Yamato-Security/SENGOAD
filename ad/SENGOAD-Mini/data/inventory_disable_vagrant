@@ -8,7 +8,7 @@ dc01 ansible_host={{ip_range}}.10 dns_domain=dc01 dict_key=dc01 ansible_user=adm
 
 [all:vars]
 ; domain_name : folder inside ad/
-domain_name=GOAD-Mini
+domain_name=SENGOAD-Mini
 
 ; winrm connection (windows)
 ansible_winrm_transport=ntlm

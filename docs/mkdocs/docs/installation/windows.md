@@ -126,7 +126,7 @@
     cd /mnt/c/whatever_folder_you_want      # This path HAS to be on one of your drives (C:/D:/E:/...)!
     git clone https://github.com/Orange-Cyberdefense/GOAD.git
     cd GOAD
-    ./goad.sh
+    ./sengoad.sh
     ```
 
 === "With Python on windows host"
@@ -151,5 +151,5 @@
         ```
     - Launch goad with vm provisioning method : 
         ```
-        py goad.py -m vm
+        py sengoad.py -m vm
         ```

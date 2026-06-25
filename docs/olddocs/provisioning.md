@@ -13,13 +13,13 @@
 
 ```bash
 cd /opt/goad
-sudo docker build -t goadansible .
+sudo docker build -t sengoadansible .
 ```
 
 - And launch the provisioning with :
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDER>/inventory main.yml
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDER>/inventory main.yml
 ```
 
 - This will launch ansible on the docker container.
@@ -95,7 +95,7 @@ ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDE
 - To run the provisioning from the docker container run (you should be in the same folder as the Dockerfile):
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDER>/inventory main.yml
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDER>/inventory main.yml
 ```
 
 - Or you can run playbooks one by one (mostly for debug or if you get trouble during install)
@@ -136,7 +136,7 @@ vagrant up   # will start the lab
 
 - If you got some errors see the troubleshooting section at the end of the document, but in most case if you get errors during install, don't think and just replay the main playbook (most of the errors which could came up are due to windows latency during installation, wait few minutes and replay the playbook)
 
-Additionally, all of the above features are nicelly wrapped into a `goad.sh` script that makes provisioning a breeze. Additionally there are `check.sh` script and various `setup.sh` scripts inside `scripts/` that makes preparing the environment easier.
+Additionally, all of the above features are nicelly wrapped into a `sengoad.sh` script that makes provisioning a breeze. Additionally there are `check.sh` script and various `setup.sh` scripts inside `scripts/` that makes preparing the environment easier.
 
 ## Enabling and disabling default vagrant user
 
@@ -154,8 +154,8 @@ If you want again to manage the lab you can reenable the user.
 ansible-playbook -i ../ad/<LAB>/data/inventory -i ../ad/<LAB>/providers/<PROVIDER>/inventory enable_vagrant.yml
 ```
 
-The same can be also achieved with the `goad.sh` wrapper for example:
+The same can be also achieved with the `sengoad.sh` wrapper for example:
 
 ```bash
-./goad.sh -t disablevagrant -l GOAD -p vmware_esxi -m local
+./sengoad.sh -t disablevagrant -l SENGOAD -p vmware_esxi -m local
 ```

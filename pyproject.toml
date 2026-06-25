@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "goad"
+name = "sengoad"
 version = "3.0.0"
 description = "Game of active directory, an active directory lab project"
 authors = ["Mayfly277 <mayfly277@gmail.com>"]

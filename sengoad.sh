@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 py=python3
-venv="$HOME/.goad/.venv"
+venv="$HOME/.sengoad/.venv"
 requirement_file="requirements.yml"
 
 if [ ! -d "$venv" ]
@@ -37,7 +37,7 @@ then
   fi
 
   echo '[+] venv not found, start python venv creation'
-  mkdir -p ~/.goad
+  mkdir -p ~/.sengoad
   $py -m venv $venv
   source $venv/bin/activate
   if [ $? -eq 0 ]; then
@@ -56,5 +56,5 @@ fi
 
 # launch the app
 source $venv/bin/activate
-$py goad.py $@
+$py sengoad.py $@
 deactivate

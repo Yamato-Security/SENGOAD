@@ -23,7 +23,7 @@
 
 ```bash
 # check prerequisites
-./goad.sh -t check -l GOAD -p proxmox
+./sengoad.sh -t check -l SENGOAD -p proxmox
 # Install
-./goad.sh -t install -l GOAD -p proxmox
+./sengoad.sh -t install -l SENGOAD -p proxmox
 ```

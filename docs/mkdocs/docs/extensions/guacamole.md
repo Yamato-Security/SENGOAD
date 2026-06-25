@@ -28,7 +28,7 @@ ludus templates build
 
 - If you get an ansible error on provisioning saying "missing role..." maybe you need to relaunch ansible-galaxy requirements install first
 ```bash
-source ~/.goad/.venv/activate
+source ~/.sengoad/.venv/activate
 cd ansible
 # python <3.11
 ansible-galaxy install -r requirements.yml

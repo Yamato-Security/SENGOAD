@@ -58,7 +58,7 @@ class Settings:
         else:
             Log.error(f'Lab {lab_name} not found')
             Log.info('fallback to GOAD lab')
-            self.set_lab_name('GOAD')
+            self.set_lab_name('SENGOAD')
         return self.lab_name
 
     def _refresh_provider(self):

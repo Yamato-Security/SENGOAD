@@ -37,13 +37,13 @@ The goad management script is now written in :simple-python: python to permit mo
     git clone https://github.com/Orange-Cyberdefense/GOAD.git
     cd GOAD
     # verify installation
-    ./goad.sh -t check -l GOAD -p virtualbox
+    ./sengoad.sh -t check -l SENGOAD -p virtualbox
 
     # install
-    ./goad.sh -t install -l GOAD -p virtualbox
+    ./sengoad.sh -t install -l SENGOAD -p virtualbox
 
     # launch goad in interactive mode
-    ./goad.sh
+    ./sengoad.sh
     ```
 
 ## Installation
@@ -61,17 +61,17 @@ The goad management script is now written in :simple-python: python to permit mo
     - `-m`  : the method of installation (local/runner/docker/remote), most of the time don't change it
     - `-ip` : the ip range to use
 
-- The easy way is just launch `./goad.sh` and use help `?`in the interactive prompt
+- The easy way is just launch `./sengoad.sh` and use help `?`in the interactive prompt
 
 
 ### Python Dependencies
 
 - Goad in :simple-python: python come with a lot of dependencies as you can see in the `requirements.yml` file on the root of the project.
-- If you don't want to run the provisioning from your python venv but only from docker you can use `goad_docker.sh` script instead of `goad.sh`. This will run the ansible with the docker method instead of local or runner.
+- If you don't want to run the provisioning from your python venv but only from docker you can use `sengoad_docker.sh` script instead of `sengoad.sh`. This will run the ansible with the docker method instead of local or runner.
 
 This are the python dependencies used by goad :
 
-- Mandatory for :simple-python: goad.py:
+- Mandatory for :simple-python: sengoad.py:
 ```
 rich
 psutil
@@ -133,9 +133,9 @@ requests
 
 ## Configuration files
 
-### $HOME/.goad/goad.ini
+### $HOME/.sengoad/sengoad.ini
 
-- On the first launch goad create a global configuration file at : `$HOME/.goad/goad.ini` this file contains some default configuration and some parameters needed by some providers.
+- On the first launch goad create a global configuration file at : `$HOME/.sengoad/sengoad.ini` this file contains some default configuration and some parameters needed by some providers.
 
 - If you change the `[default]` config it will change the default selection when goad start
 - Others configurations are related to specific providers

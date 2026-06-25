@@ -34,13 +34,13 @@
 - If you run ansible locally
 
 ```bash
-./goad.sh -t check -l GOAD -p vmware -m local
+./sengoad.sh -t check -l SENGOAD -p vmware -m local
 ```
 
 - If you run ansible with docker
 
 ```bash
-./goad.sh -t check -l GOAD -p vmware -m docker
+./sengoad.sh -t check -l SENGOAD -p vmware -m docker
 ```
 
 ## Install dependencies
@@ -132,12 +132,12 @@ ansible-galaxy install -r ansible/requirements.yml
 - This will launch vagrant up and the ansible playbooks
 - If you run ansible locally
 ```bash
-./goad.sh -t install -l GOAD -p vmware -m local
+./sengoad.sh -t install -l SENGOAD -p vmware -m local
 ```
 
 - If you run ansible on docker
 ```bash
-./goad.sh -t install -l GOAD -p vmware -m docker
+./sengoad.sh -t install -l SENGOAD -p vmware -m docker
 ```
 
 ### Launch installation manually
@@ -167,13 +167,13 @@ vagrant plugin install winrm-elevated
 - launch the provision script (launch ansible with failover on errors)
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible /bin/bash -c "ANSIBLE_COMMAND='ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware/inventory' ../scripts/provisionning.sh"
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible /bin/bash -c "ANSIBLE_COMMAND='ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware/inventory' ../scripts/provisionning.sh"
 ```
 
 - or launch ansible from docker directly
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware/inventory main.yml
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware/inventory main.yml
 ```
 
 ### Launch provisioning with Ansible

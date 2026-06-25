@@ -24,8 +24,8 @@ class Config:
         config = configparser.ConfigParser(allow_no_value=True)
 
         config.add_section('default')
-        config.set('default', '; lab: GOAD / GOAD-Light / MINILAB / NHA / SCCM')
-        config.set('default', 'lab', 'GOAD')
+        config.set('default', '; lab: SENGOAD / SENGOAD-Light / MINILAB / NHA / SCCM')
+        config.set('default', 'lab', 'SENGOAD')
 
         config.set('default', '; provider : virtualbox / vmware / vmware_esxi / aws / azure / proxmox')
         config.set('default', 'provider', 'vmware')
@@ -85,7 +85,7 @@ class Config:
     def merge_config(self, args):
         """
         Merge the configuration with the script arguments
-        :param args: goad.py arguments
+        :param args: sengoad.py arguments
         :return: goad.Config object
         """
         self.config = configparser.ConfigParser()

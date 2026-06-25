@@ -27,11 +27,11 @@ All vms got defender activated
 
 3) on the provisioning computer :
 ```bash
-./goad.sh -t check -l SCCM -p proxmox -m local
-./goad.sh -t install -l SCCM -p proxmox -m local
+./sengoad.sh -t check -l SCCM -p proxmox -m local
+./sengoad.sh -t install -l SCCM -p proxmox -m local
 ```
 
 4) if something goes wrong (restart of the vms during install, etc...), you can rerun only ansible with -a
 ```bash
-./goad.sh -t install -l SCCM -p proxmox -m local -a
+./sengoad.sh -t install -l SCCM -p proxmox -m local -a
 ```

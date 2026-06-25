@@ -4,16 +4,15 @@ from goad.utils import *
 
 def print_logo():
     logo = r"""[white]
-   _____   _____          _____ 
-  / ____| / ||| \  [blue] /\\[/blue]   |  __ \
- | |  __||  |||  | [blue]/  \\[/blue]  | |  | |
- | | |_ ||  |||  |[blue]/ /\ \\[/blue] | |  | |
- | |__| ||  |||  [blue]/ /__\ \\[/blue]| |__| |
-  \_____| \_|||_[blue]/________\\[/blue]_____/
-    [bold]Game Of Active Directory[/bold]
-      [yellow][italic]Pwning is coming[/italic][/yellow]
+ ____  _____ _   _  ____  ___    _    ____
+/ ___|| ____| \ | |/ ___|/ _ \  / \  |  _ \
+\___ \|  _| |  \| | |  _| | | |/ _ \ | | | |
+ ___) | |___| |\  | |_| | |_| / ___ \| |_| |
+|____/|_____|_| \_|\____|\___/_/   \_\____/
+   [bold]Sengoku - Game Of Active Directory[/bold]
+     [blue]戦国[/blue] [yellow][italic]Pwning is coming[/italic][/yellow]
 [/white]
-Goad management console type help or ? to list commands
+Sengoad management console type help or ? to list commands
 """
     print(logo)
 

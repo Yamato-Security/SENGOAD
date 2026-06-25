@@ -10,7 +10,7 @@
 - If you use goad previously your ansible requirements may not be up to date. Be sure to do this before the install:
 
 ```bash
-source ~/.goad/.venv/bin/activate
+source ~/.sengoad/.venv/bin/activate
 cd ~/GOAD/ansible
 
 # if you python is >=3.11
@@ -22,13 +22,13 @@ ansible-galaxy install -r requirements.yml
 - Install :
 
 ```bash
-./goad.sh -t install -l RYUEN -p virtualbox
+./sengoad.sh -t install -l RYUEN -p virtualbox
 ```
 
 or
 
 ```bash
-./goad.sh
+./sengoad.sh
 > set_lab RYUEN
 > set_provider <your_provider>
 > set_iprange 192.168.56  # select the one you want and you can skip this with ludus
@@ -38,7 +38,7 @@ or
 - Once install finish disable vagrant user to avoid using it :
 
 ```bash
-./goad.sh
+./sengoad.sh
 > load <instance_id>
 > disable_vagrant
 ```

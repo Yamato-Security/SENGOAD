@@ -1,9 +1,9 @@
 # Argument mode
 
-- Launch goad.py script (or goad.sh wrapper) with arguments
+- Launch sengoad.py script (or sengoad.sh wrapper) with arguments
 
 ```bash
-usage: goad.py [-h] [-t TASK] [-l LAB] [-p PROVIDER] [-ip IP_RANGE] [-m METHOD] [-i INSTANCE] [-e EXTENSIONS] [-a ANSIBLE_ONLY] [-r RUN_PLAYBOOK]
+usage: sengoad.py [-h] [-t TASK] [-l LAB] [-p PROVIDER] [-ip IP_RANGE] [-m METHOD] [-i INSTANCE] [-e EXTENSIONS] [-a ANSIBLE_ONLY] [-r RUN_PLAYBOOK]
 
 Description : goad lab management console.
 
@@ -27,6 +27,6 @@ optional arguments:
                         run only one ansible playbook on instance (-i) (for task install only)
 
 Example :
- - Install GOAD on virtualbox : python3 goad.py -t install -l GOAD -p virtualbox
- - Launch GOAD interactive console : python3 goad.py
+ - Install GOAD on virtualbox : python3 sengoad.py -t install -l SENGOAD -p virtualbox
+ - Launch GOAD interactive console : python3 sengoad.py
 ```

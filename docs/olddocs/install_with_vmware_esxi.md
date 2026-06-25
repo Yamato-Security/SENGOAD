@@ -35,13 +35,13 @@
 - If you run ansible locally
 
 ```bash
-./goad.sh -t check -l GOAD -p vmware_esxi -m local
+./sengoad.sh -t check -l SENGOAD -p vmware_esxi -m local
 ```
 
 - If you run ansible with docker
 
 ```bash
-./goad.sh -t check -l GOAD -p vmware_esxi -m docker
+./sengoad.sh -t check -l SENGOAD -p vmware_esxi -m docker
 ```
 
 ## Install dependencies
@@ -141,12 +141,12 @@ source ad/<LAB>/providers/vmware_esxi/.env
 - This will launch vagrant up and the ansible playbooks
 - If you run ansible locally
 ```bash
-./goad.sh -t install -l GOAD -p vmware_esxi -m local
+./sengoad.sh -t install -l SENGOAD -p vmware_esxi -m local
 ```
 
 - If you run ansible on docker
 ```bash
-./goad.sh -t install -l GOAD -p vmware_esxi -m docker
+./sengoad.sh -t install -l SENGOAD -p vmware_esxi -m docker
 ```
 
 ### Launch installation manually
@@ -176,13 +176,13 @@ vagrant plugin install winrm-elevated
 - launch the provision script (launch ansible with failover on errors)
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible /bin/bash -c "ANSIBLE_COMMAND='ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware_esxi/inventory' ../scripts/provisionning.sh"
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible /bin/bash -c "ANSIBLE_COMMAND='ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware_esxi/inventory' ../scripts/provisionning.sh"
 ```
 
 - or launch ansible from docker directly
 
 ```bash
-sudo docker run -ti --rm --network host -h goadansible -v $(pwd):/goad -w /goad/ansible goadansible ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware_esxi/inventory main.yml
+sudo docker run -ti --rm --network host -h sengoadansible -v $(pwd):/goad -w /goad/ansible sengoadansible ansible-playbook -i ../ad/GOAD/data/inventory -i ../ad/GOAD/providers/vmware_esxi/inventory main.yml
 ```
 
 ### Launch provisioning with Ansible
@@ -214,7 +214,7 @@ It creates a snapshot for all Vagrant deployed boxes in a lab.
 Example usage:
 
 ```bash
-./goad.sh -t snapshot -l GOAD -p vmware_esxi -m local
+./sengoad.sh -t snapshot -l SENGOAD -p vmware_esxi -m local
 ```
 
 ### reset
@@ -224,5 +224,5 @@ It reverts to a latest snapshot without deleting it for all Vagrant deployed box
 Example usage:
 
 ```bash
-./goad.sh -t reset -l GOAD -p vmware_esxi -m local
+./sengoad.sh -t reset -l SENGOAD -p vmware_esxi -m local
 ```

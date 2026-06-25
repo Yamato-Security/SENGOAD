@@ -109,15 +109,15 @@
     git clone https://github.com/Orange-Cyberdefense/GOAD.git
     cd GOAD
     sudo apt install python3.11-venv
-    ./goad.sh
+    ./sengoad.sh
     ...>exit
-    vim ~/.goad/goad.ini # add the api_key in the config file (keep impersonate to yes and use an admin user)
-    ./goad.sh -p ludus
+    vim ~/.sengoad/sengoad.ini # add the api_key in the config file (keep impersonate to yes and use an admin user)
+    ./sengoad.sh -p ludus
     ...>set_lab XXX # GOAD/GOAD-Light/NHA/SCCM
     ...>install
     ```
 
-## Prepare your python environment for goad.py
+## Prepare your python environment for sengoad.py
 
 === "Classic"
     
@@ -138,21 +138,21 @@
     - Then you are ready to launch 
 
     ```
-    ./goad.sh
+    ./sengoad.sh
     ```
 
     - The script will :
         - verify python version >=3.8
-        - create a venv in `~/.goad/.venv`
+        - create a venv in `~/.sengoad/.venv`
         - launch python requirements installation
         - launch ansible-galaxy collections requirements installation
-        - start goad.py with the venv created
+        - start sengoad.py with the venv created
 
     !!! tip
-        if you got an error during requirements installation, look at the error and delete `~/.goad/.venv` before try again
+        if you got an error during requirements installation, look at the error and delete `~/.sengoad/.venv` before try again
 
     !!! tip
-        if you need to force a python version change the variable `py=python3` to `py=python3.10` for example in the `goad.sh` script
+        if you need to force a python version change the variable `py=python3` to `py=python3.10` for example in the `sengoad.sh` script
 
 === "With poetry"
 
@@ -174,7 +174,7 @@
 
     - Run goad:
     ```
-    poetry run python3 goad.py
+    poetry run python3 sengoad.py
     ```
 
 === "Provisioning with docker"
@@ -198,4 +198,4 @@
     sudo apt install python3.10-venv
     ```
     
-    - Run goad with `./goad_docker.sh` instead of `./goad.sh` to install the dependencies without the ansible part (local and runner provisioning method will not be available)
+    - Run goad with `./sengoad_docker.sh` instead of `./sengoad.sh` to install the dependencies without the ansible part (local and runner provisioning method will not be available)

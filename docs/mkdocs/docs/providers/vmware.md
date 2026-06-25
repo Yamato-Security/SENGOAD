@@ -31,7 +31,7 @@
 ## check dependencies
 
 ```bash
-./goad.sh -p vmware
+./sengoad.sh -p vmware
 GOAD/vmware/local/192.168.56.X > check
 ```
 
@@ -48,7 +48,7 @@ GOAD/vmware/local/192.168.56.X > check
 - To install run the goad script and launch install or use the goad script arguments
 
 ```bash
-./goad.sh -p vmware
+./sengoad.sh -p vmware
 GOAD/vmware/local/192.168.56.X > set_lab <lab>  # here choose the lab you want (GOAD/GOAD-Light/NHA/SCCM)
 GOAD/vmware/local/192.168.56.X > set_ip_range <ip_range>  # here choose the  ip range you want to use ex: 192.168.56 (only the first three digits)
 GOAD/vmware/local/192.168.56.X > install
@@ -59,5 +59,5 @@ GOAD/vmware/local/192.168.56.X > install
 - or all in command line with arguments
 
 ```bash
-./goad.sh -t install -p vmware -l <lab> -ip <ip_range_to_use>
+./sengoad.sh -t install -p vmware -l <lab> -ip <ip_range_to_use>
 ```

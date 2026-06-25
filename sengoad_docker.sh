@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 py=python3
-venv="$HOME/.goad/.venvdocker"
+venv="$HOME/.sengoad/.venvdocker"
 
 if [ ! -d "$venv" ]
 then
@@ -27,7 +27,7 @@ then
       exit 0
   fi
   echo '[+] venv not found, start python venv creation'
-  mkdir -p ~/.goad
+  mkdir -p ~/.sengoad
   $py -m venv $venv
   source $venv/bin/activate
   $py -m pip install --upgrade pip
@@ -43,15 +43,15 @@ else
   use_sudo="sudo"
 fi
 
-ALREADY_BUILD=$($use_sudo docker images |grep -c "goadansible")
+ALREADY_BUILD=$($use_sudo docker images |grep -c "sengoadansible")
 if [[ $ALREADY_BUILD -eq 0 ]]; then
   echo "[+] Build container"
-  $use_sudo docker build -t goadansible .
-  echo "${OK} Container goadansible creation complete"
+  $use_sudo docker build -t sengoadansible .
+  echo "${OK} Container sengoadansible creation complete"
 fi
 
-echo "goad with docker, disable local and runner provisioner"
+echo "sengoad with docker, disable local and runner provisioner"
 # launch the app
 source $venv/bin/activate
-$py goad.py -m docker -d local -d runner $@
+$py sengoad.py -m docker -d local -d runner $@
 deactivate

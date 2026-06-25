@@ -23,9 +23,9 @@
 
 ```bash
 # check prerequisites
-./goad.sh -t check -l GOAD -p proxmox
+./sengoad.sh -t check -l SENGOAD -p proxmox
 # Install
-./goad.sh -t install -l GOAD -p proxmox
+./sengoad.sh -t install -l SENGOAD -p proxmox
 ```
 
 - Details on the provisioning process are here : [provisioning.md](./provisioning.md)

@@ -35,7 +35,7 @@
 ## check dependencies
 
 ```bash
-./goad.sh -p vmware_esxi
+./sengoad.sh -p vmware_esxi
 GOAD/vmware_esxi/local/192.168.56.X > check
 ```
 
@@ -52,7 +52,7 @@ GOAD/vmware_esxi/local/192.168.56.X > check
 - To install run the goad script and launch install or use the goad script arguments
 
 ```bash
-./goad.sh -p vmware_esxi
+./sengoad.sh -p vmware_esxi
 GOAD/vmware_esxi/local/192.168.56.X > set_lab <lab>  # here choose the lab you want (GOAD/GOAD-Light/NHA/SCCM)
 GOAD/vmware_esxi/local/192.168.56.X > set_ip_range <ip_range>  # here choose the  ip range you want to use ex: 192.168.56 (only the first three digits)
 GOAD/vmware_esxi/local/192.168.56.X > install
@@ -63,5 +63,5 @@ GOAD/vmware_esxi/local/192.168.56.X > install
 - or all in command line with arguments
 
 ```bash
-./goad.sh -t install -p vmware_esxi -l <lab> -ip <ip_range_to_use>
+./sengoad.sh -t install -p vmware_esxi -l <lab> -ip <ip_range_to_use>
 ```

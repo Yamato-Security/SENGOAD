@@ -34,7 +34,7 @@ az login
 - The goad configuration file as some options for azure:
 
 ```
-# ~/.goad/goad.ini
+# ~/.sengoad/sengoad.ini
 ...
 [azure]
 az_location = westeurope
@@ -47,9 +47,9 @@ az_location = westeurope
 
 ```bash
 # check prerequisites
-./goad.sh -t check -l GOAD -p azure
+./sengoad.sh -t check -l SENGOAD -p azure
 # Install
-./goad.sh -t install -l GOAD -p azure
+./sengoad.sh -t install -l SENGOAD -p azure
 ```
 
 or from the interactive console :

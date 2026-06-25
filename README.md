@@ -1,9 +1,9 @@
 <div align="center">
-  <h1><img alt="GOAD (Game Of Active Directory)" src="./docs/mkdocs/docs/img/logo_GOAD3.png"></h1>
+  <h1><img alt="SENGOAD (Sengoku Game Of Active Directory)" src="./docs/mkdocs/docs/img/logo_GOAD3.png"></h1>
   <br>
 </div>
 
-**GOAD (v3)**
+**SENGOAD** — a Sengoku-jidai reskin of GOAD (v3)
 
 :bookmark: Documentation : [https://orange-cyberdefense.github.io/GOAD/](https://orange-cyberdefense.github.io/GOAD/)
 
@@ -15,7 +15,7 @@ SENGOAD re-skins the lab's *Game of Thrones* names to the Japanese **Sengoku Jid
 - 🇯🇵 [GOAD → SENGOAD 対応表（日本語）](./docs/SENGOAD_mapping_JA.md)
 
 ## Description
-GOAD is a pentest active directory LAB project.
+SENGOAD is a Sengoku-jidai reskin of GOAD — a pentest Active Directory lab.
 The purpose of this lab is to give pentesters a vulnerable Active directory environment ready to use to practice usual attack techniques.
 
 > [!CAUTION]
@@ -34,12 +34,12 @@ This lab use free Windows VM only (180 days). After that delay enter a license o
 <img alt="GOAD" width="800" src="./docs/img/diagram-GOADv3-full.png">
 </div>
 
-- [GOAD](https://orange-cyberdefense.github.io/GOAD/labs/GOAD/) : 5 vms, 2 forests, 3 domains (full goad lab)
+- [SENGOAD](https://orange-cyberdefense.github.io/GOAD/labs/GOAD/) : 5 vms, 2 forests, 3 domains (full SENGOAD lab)
 <div align="center">
 <img alt="GOAD" width="800" src="./docs/img/GOAD_schema.png">
 </div>
 
-- [GOAD-Light](https://orange-cyberdefense.github.io/GOAD/labs/GOAD-Light/) : 3 vms, 1 forest, 2 domains (smaller goad lab for those with a smaller pc)
+- [SENGOAD-Light](https://orange-cyberdefense.github.io/GOAD/labs/GOAD-Light/) : 3 vms, 1 forest, 2 domains (smaller SENGOAD lab for those with a smaller pc)
 <div align="center">
 <img alt="GOAD Light" width="600" src="./docs/img/GOAD-Light_schema.png">
 </div>

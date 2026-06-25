@@ -59,7 +59,7 @@ class LudusProvider(Provider):
             Log.error('Error to contact ludus.')
             return None
         if 'No API key loaded' in ludus_version:
-            Log.error('Please add the ludus api key to HOME/.goad/goad.ini file')
+            Log.error('Please add the ludus api key to HOME/.sengoad/sengoad.ini file')
         else:
             Log.success('Api key is set')
             if self.use_impersonation:

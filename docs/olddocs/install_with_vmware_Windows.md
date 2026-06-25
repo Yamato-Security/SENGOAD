@@ -40,10 +40,10 @@ vagrant up
 This will proceed to run through pulling down the five GOAD virtual machines. Once complete you can proceed to the next step which is deploying ansible to confirgure the VMs. 
 
 ### Deploy Ansible to Build VMs
-Once VMs have all built with Vagrant, the next step is to hop into your Kali/Ubuntu VM and roll with running Ansible to configure them. To do this, navigate to the GOAD directory and run the goad.sh setup script as a standard user:
+Once VMs have all built with Vagrant, the next step is to hop into your Kali/Ubuntu VM and roll with running Ansible to configure them. To do this, navigate to the GOAD directory and run the sengoad.sh setup script as a standard user:
 
 ```
-./goad.sh -t install -l GOAD -p vmware -m local -a
+./sengoad.sh -t install -l SENGOAD -p vmware -m local -a
 ```
 
 Provided you've done all the pre-req setup stages, this will run through the setup of all the VMs and configure them to the GOAD Ansible YML file specs.  

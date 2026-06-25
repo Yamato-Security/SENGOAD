@@ -1,6 +1,6 @@
 [all:vars]
 ; domain_name : folder inside ad/
-domain_name=GOAD-Light
+domain_name=SENGOAD-Light
 ; administrator user
 admin_user=administrator
 
