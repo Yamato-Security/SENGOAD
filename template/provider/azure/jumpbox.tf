@@ -8,6 +8,7 @@ resource "azurerm_public_ip" "ubuntu_public_ip" {
   location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
   allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "ubuntu_jumbox_nic" {
