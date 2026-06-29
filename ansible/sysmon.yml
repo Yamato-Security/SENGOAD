@@ -1,0 +1,6 @@
+---
+- name: Install or update Sysmon on Windows hosts
+  hosts: domain
+  gather_facts: no
+  roles:
+    - sysmon
