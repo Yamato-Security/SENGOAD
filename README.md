@@ -43,7 +43,7 @@ This lab use free Windows VM only (180 days). After that delay enter a license o
 
 - [SENGOAD](https://orange-cyberdefense.github.io/GOAD/labs/GOAD/) : 5 vms, 2 forests, 3 domains (full SENGOAD lab)
 <div align="center">
-<img alt="GOAD" width="800" src="./docs/img/GOAD_schema.png">
+<img alt="SENGOAD full lab (5 VMs)" width="800" src="./docs/img/diagram-SENGOAD-full.png">
 </div>
 
 - [SENGOAD-Light](https://orange-cyberdefense.github.io/GOAD/labs/GOAD-Light/) : 3 vms, 1 forest, 2 domains (smaller SENGOAD lab for those with a smaller pc)
