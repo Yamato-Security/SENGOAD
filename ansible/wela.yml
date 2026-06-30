@@ -1,0 +1,6 @@
+---
+- name: Improve Windows event logging for WELA
+  hosts: domain
+  gather_facts: no
+  roles:
+    - wela

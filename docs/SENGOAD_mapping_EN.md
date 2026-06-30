@@ -185,7 +185,7 @@ lab's password policy and intended crackability still hold.
 | `sen.rikyu` | `IchigoIchie` | 一期一会 — Rikyū's tea maxim |
 | `mori.motonari` | `SanbonNoYa!` | 三本の矢 — the Three Arrows |
 | `mori.terumoto` | `GoldKabuto` | a golden helmet |
-| `date.masamune` | `uma` | 馬 (horse) — weak, on purpose |
+| `date.masamune` | `horse` | 馬 (horse) — weak, on purpose |
 | `honda.tadatomo` | `Bush1do!` | 武士道 (a warrior's honor) |
 | `chiyo` | `Kaih0u!` | 解放 (liberation) |
 | `orochi` | `Karyuu!` | 火竜 (fire dragon) |

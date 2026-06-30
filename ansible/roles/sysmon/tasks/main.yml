@@ -1,0 +1,41 @@
+---
+- name: Create Sysmon directory
+  ansible.windows.win_file:
+    path: C:\sysmon
+    state: directory
+
+- name: Copy Sysmon zip
+  ansible.windows.win_copy:
+    src: "{{ playbook_dir }}/roles/logs_windows/files/Sysmon.zip"
+    dest: C:\sysmon\Sysmon.zip
+
+- name: Extract Sysmon
+  community.windows.win_unzip:
+    src: C:\sysmon\Sysmon.zip
+    dest: C:\sysmon
+    delete_archive: no
+
+- name: Download Sysmon config
+  ansible.windows.win_get_url:
+    url: https://raw.githubusercontent.com/olafhartong/sysmon-modular/master/sysmonconfig.xml
+    dest: C:\sysmon\sysmonconfig.xml
+
+- name: Check Sysmon64 service
+  ansible.windows.win_service_info:
+    name: Sysmon64
+  register: sysmon64_service
+
+- name: Check Sysmon service
+  ansible.windows.win_service_info:
+    name: Sysmon
+  register: sysmon_service
+
+- name: Install Sysmon64
+  ansible.windows.win_command: C:\sysmon\Sysmon64.exe -accepteula -i C:\sysmon\sysmonconfig.xml
+  when:
+    - sysmon64_service.services | length == 0
+    - sysmon_service.services | length == 0
+
+- name: Update Sysmon64 config
+  ansible.windows.win_command: C:\sysmon\Sysmon64.exe -c C:\sysmon\sysmonconfig.xml
+  when: sysmon64_service.services | length > 0
