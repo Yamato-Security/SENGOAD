@@ -1,8 +1,8 @@
-# GOAD
+# SENGOAD
 
 - LAB Content 
 
-![GOAD overview](../../docs/img/GOAD_schema.png)
+![SENGOAD full lab (5 VMs)](../../docs/img/diagram-SENGOAD-full.png)
 
 ## Servers
 This lab is actually composed of five virtual machines:
