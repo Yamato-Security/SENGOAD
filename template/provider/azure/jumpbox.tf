@@ -24,6 +24,12 @@ resource "azurerm_network_interface" "ubuntu_jumbox_nic" {
   }
 }
 
+resource "azurerm_marketplace_agreement" "kali" {
+  publisher = "kali-linux"
+  offer     = "kali"
+  plan      = "kali-2026-2"
+}
+
 resource "azurerm_linux_virtual_machine" "jumpbox" {
   name                = "ubuntu-jumpbox"
   resource_group_name = azurerm_resource_group.resource_group.name
@@ -47,11 +53,19 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
+    publisher = "kali-linux"
+    offer     = "kali"
+    sku       = "kali-2026-2"
     version   = "latest"
   }
+
+  plan {
+    name      = "kali-2026-2"
+    publisher = "kali-linux"
+    product   = "kali"
+  }
+
+  depends_on = [azurerm_marketplace_agreement.kali]
 
   provisioner "local-exec" {
     command = "echo '${tls_private_key.ssh.private_key_pem}' > ../ssh_keys/ubuntu-jumpbox.pem && chmod 600 ../ssh_keys/ubuntu-jumpbox.pem"
