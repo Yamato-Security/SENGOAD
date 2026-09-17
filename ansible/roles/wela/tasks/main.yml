@@ -26,6 +26,69 @@
 - name: Enable audit policy change
   ansible.windows.win_command: auditpol /set /category:"Policy Change" /success:enable /failure:enable
 
+# --- Account Logon (adds Kerberos FAILURE + NTLM credential validation) ---
+# The default DC policy logs Kerberos success only, so failed pre-auth (4771),
+# blocked/forged-ticket failures, and pass-the-hash NTLM validation (4776) are lost.
+- name: Enable audit account logon (Kerberos + credential validation, success and failure)
+  ansible.windows.win_command: auditpol /set /category:"Account Logon" /success:enable /failure:enable
+
+# --- Object Access (off by default; enables ADCS, SMB share, LSASS/handle, task, SAM auditing) ---
+# Specific subcategories only, to avoid the Filtering Platform Connection 5156/5157 flood.
+- name: Enable audit object access - Certification Services (ADCS 4886/4887/4899/4900 - ESC1 issuance)
+  ansible.windows.win_command: auditpol /set /subcategory:"Certification Services" /success:enable /failure:enable
+
+- name: Enable audit object access - File Share (5140/5142 - SMB share access/enumeration)
+  ansible.windows.win_command: auditpol /set /subcategory:"File Share" /success:enable /failure:enable
+
+- name: Enable audit object access - Detailed File Share (5145 - per-file SMB access, e.g. SYSVOL scripts) - success only to limit volume
+  ansible.windows.win_command: auditpol /set /subcategory:"Detailed File Share" /success:enable /failure:disable
+
+- name: Enable audit object access - File System (4656/4663 - requires SACLs, e.g. on LSASS/sensitive paths)
+  ansible.windows.win_command: auditpol /set /subcategory:"File System" /success:enable /failure:enable
+
+- name: Enable audit object access - Handle Manipulation (4656/4658/4690 - LSASS handle access)
+  ansible.windows.win_command: auditpol /set /subcategory:"Handle Manipulation" /success:enable /failure:enable
+
+- name: Enable audit object access - SAM (4661 - privileged SAM object reconnaissance)
+  ansible.windows.win_command: auditpol /set /subcategory:"SAM" /success:enable /failure:enable
+
+- name: Enable audit object access - Registry (4657 - requires SACLs on sensitive keys)
+  ansible.windows.win_command: auditpol /set /subcategory:"Registry" /success:enable /failure:enable
+
+- name: Enable audit object access - Other Object Access Events (4698-4702 scheduled tasks)
+  ansible.windows.win_command: auditpol /set /subcategory:"Other Object Access Events" /success:enable /failure:enable
+
+# --- System / Security System Extension (off by default; SSP/auth-package + service install) ---
+- name: Enable audit security system extension (4610/4611/4614/4622/4697 - LSA SSP/authn-package, mimikatz)
+  ansible.windows.win_command: auditpol /set /subcategory:"Security System Extension" /success:enable /failure:enable
+
+# --- Privilege Use (off by default; sensitive privilege abuse) ---
+- name: Enable audit sensitive privilege use (4673/4674 - privileged operations, may be noisy)
+  ansible.windows.win_command: auditpol /set /subcategory:"Sensitive Privilege Use" /success:enable /failure:enable
+
+# --- Directory Service LDAP query logging (1644) for BloodHound/SharpHound recon (DCs only) ---
+# NTDS "15 Field Engineering" diagnostic + low search thresholds so expensive/inefficient LDAP
+# searches are written to the Directory Service log as 1644. Ignored on non-DC hosts (no NTDS key).
+- name: Enable LDAP query logging diagnostic (1644) on domain controllers
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Diagnostics
+    name: "15 Field Engineering"
+    data: 5
+    type: dword
+  ignore_errors: yes
+
+- name: Set LDAP expensive/inefficient/long-running search thresholds (1644) on domain controllers
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: dword
+  loop:
+    - { name: "Expensive Search Results Threshold", data: 1 }
+    - { name: "Inefficient Search Results Threshold", data: 1 }
+    - { name: "Search Time Threshold (msecs)", data: 1 }
+  ignore_errors: yes
+
 - name: Enable command line in process creation events
   ansible.windows.win_regedit:
     path: HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit

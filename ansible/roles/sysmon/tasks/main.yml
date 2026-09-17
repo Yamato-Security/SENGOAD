@@ -15,9 +15,12 @@
     dest: C:\sysmon
     delete_archive: no
 
-- name: Download Sysmon config
-  ansible.windows.win_get_url:
-    url: https://raw.githubusercontent.com/olafhartong/sysmon-modular/master/sysmonconfig.xml
+- name: Copy Sysmon config (SwiftOnSecurity / NextronSystems sysmon-config, pinned)
+  # Pinned from https://github.com/NextronSystems/sysmon-config/blob/master/sysmonconfig-export.xml
+  # (bundled in this role so deployment does not depend on GitHub being reachable at build time,
+  # and so the exact ruleset is version-controlled with the lab).
+  ansible.windows.win_copy:
+    src: "{{ playbook_dir }}/roles/sysmon/files/sysmonconfig-export.xml"
     dest: C:\sysmon\sysmonconfig.xml
 
 - name: Check Sysmon64 service
