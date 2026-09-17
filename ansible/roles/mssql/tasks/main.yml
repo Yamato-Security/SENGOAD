@@ -86,22 +86,76 @@
 - debug: msg="{{mssql_install_already_done}}"
 
 # Install the database with a domain admin user
-- name: Install the database
-  win_command: c:\setup\mssql\sql_installer.exe /configurationfile=c:\setup\mssql\sql_conf.ini /IACCEPTSQLSERVERLICENSETERMS /MEDIAPATH=c:\setup\mssql\media /QUIET /HIDEPROGRESSBAR
-  args:
-    chdir: c:\setup
-  vars:
-    ansible_become: yes
-    ansible_become_method: runas
-    ansible_become_user: "{{domain_admin}}"
-    ansible_become_password: "{{domain_admin_password}}"
-    ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
-  register: mssqlinstall
-  until: "mssqlinstall is not failed"
-  retries: 3
-  delay: 120
+# NOTE: this used to run inline via win_command with become(runas, netonly). That hangs the WinRM
+# shell forever with no timeout once the installer runs more than a few seconds - see
+# https://github.com/ansible/ansible/issues/72991. Launching it detached via Start-Process under
+# become(runas) doesn't work either: without -NoNewWindow the process can't allocate a console in
+# the non-interactive session and dies instantly with no output, and with -NoNewWindow it shares
+# the become session's job object so the WinRM exec still blocks until it exits.
+# Running it via a Scheduled Task with a real password logon avoids all of this: it gets a normal
+# session (so the console works) that isn't tied to the WinRM/become exec, and a real network logon
+# for the domain admin account (so it doesn't need the netonly double-hop trick either).
+- name: Remove any leftover database installer scheduled task
+  community.windows.win_scheduled_task:
+    name: SengoadMssqlInstall
+    state: absent
   when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
-#  when: not mssql_install_already_done.stat.exists
+
+- name: Create the database installer scheduled task
+  community.windows.win_scheduled_task:
+    name: SengoadMssqlInstall
+    state: present
+    enabled: yes
+    username: "{{domain_admin}}"
+    password: "{{domain_admin_password}}"
+    logon_type: password
+    run_level: highest
+    actions:
+      - path: c:\setup\mssql\sql_installer.exe
+        arguments: /configurationfile=c:\setup\mssql\sql_conf.ini /IACCEPTSQLSERVERLICENSETERMS /MEDIAPATH=c:\setup\mssql\media /QUIET /HIDEPROGRESSBAR
+        working_directory: c:\setup
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
+- name: Start the database installer scheduled task
+  win_shell: Start-ScheduledTask -TaskName SengoadMssqlInstall
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
+- name: Wait for the database installer to finish
+  win_shell: "(Get-ScheduledTask -TaskName SengoadMssqlInstall).State.ToString()"
+  register: mssqlinstall_wait
+  until: (mssqlinstall_wait.stdout | trim) != "Running"
+  retries: 60
+  delay: 60
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
+- name: Remove the database installer scheduled task
+  community.windows.win_scheduled_task:
+    name: SengoadMssqlInstall
+    state: absent
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
+- name: Verify the database service was created
+  win_service:
+    name: '{{mssql_service_name}}'
+  register: mssqlinstall_result
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
+- name: Show the installer output if the service was not created
+  win_shell: |
+    $summary = Get-ChildItem 'C:\Program Files\Microsoft SQL Server' -Recurse -Filter 'Summary.txt' -ErrorAction SilentlyContinue |
+      Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty FullName
+    if ($summary) { Get-Content $summary } else { "no Summary.txt found under Microsoft SQL Server - setup.exe likely never ran" }
+  register: mssqlinstall_log
+  when:
+    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+    - mssqlinstall_result.exists is not defined or not mssqlinstall_result.exists
+
+- name: Fail with the installer output
+  fail:
+    msg: "{{ mssqlinstall_log.stdout_lines | default(['no installer output captured']) }}"
+  when:
+    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+    - mssqlinstall_result.exists is not defined or not mssqlinstall_result.exists
 
 # sql server 2022
 - name: Add or update registry for ip port
