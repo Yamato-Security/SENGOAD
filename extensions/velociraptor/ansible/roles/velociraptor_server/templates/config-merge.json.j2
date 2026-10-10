@@ -1,0 +1,27 @@
+{
+  "Client": {
+    "server_urls": [
+      "https://{{ velociraptor_server_address }}:{{ velociraptor_server_frontend_port }}/"
+    ]
+  },
+  "Frontend": {
+    "hostname": "{{ velociraptor_server_address }}",
+    "bind_address": "0.0.0.0",
+    "bind_port": {{ velociraptor_server_frontend_port }}
+  },
+  "GUI": {
+    "bind_address": "0.0.0.0",
+    "bind_port": {{ velociraptor_server_gui_port }},
+    "public_url": "https://127.0.0.1:{{ velociraptor_server_gui_port }}/app/index.html",
+    "allowed_cidr": [
+      "{{ velociraptor_server_management_address }}/32"
+    ]
+  },
+  "Datastore": {
+    "location": "/var/lib/velociraptor",
+    "filestore_directory": "/var/lib/velociraptor"
+  },
+  "Logging": {
+    "output_directory": "/var/log/velociraptor"
+  }
+}

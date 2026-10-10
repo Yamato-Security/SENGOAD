@@ -1,0 +1,8 @@
+  - vm_name: "{{ range_id }}-VELOCIRAPTOR"
+    hostname: "{{ range_id }}-VELOCIRAPTOR"
+    template: ubuntu-22.04-x64-server-template
+    vlan: 10
+    ip_last_octet: 53
+    ram_gb: 4
+    cpus: 2
+    linux: true
