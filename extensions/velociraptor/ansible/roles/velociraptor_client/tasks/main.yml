@@ -1,0 +1,33 @@
+---
+- name: Wait until the Velociraptor frontend is reachable
+  ansible.windows.win_wait_for:
+    host: "{{ hostvars[velociraptor_client_server_inventory_host].ansible_host }}"
+    port: "{{ velociraptor_client_frontend_port }}"
+    timeout: 60
+
+- name: Create the Velociraptor staging directory
+  ansible.windows.win_file:
+    path: "{{ velociraptor_client_windows_temp_dir }}"
+    state: directory
+
+- name: Copy the deployment-specific Velociraptor MSI
+  ansible.windows.win_copy:
+    src: "{{ hostvars[velociraptor_client_server_inventory_host].velociraptor_server_controller_msi_path }}"
+    dest: "{{ velociraptor_client_windows_msi_path }}"
+
+- name: Install the Velociraptor client service
+  ansible.windows.win_package:
+    path: "{{ velociraptor_client_windows_msi_path }}"
+    state: present
+    arguments: /qn /norestart
+
+- name: Ensure the Velociraptor service starts automatically
+  ansible.windows.win_service:
+    name: Velociraptor
+    start_mode: auto
+    state: started
+
+- name: Remove the staged MSI
+  ansible.windows.win_file:
+    path: "{{ velociraptor_client_windows_msi_path }}"
+    state: absent

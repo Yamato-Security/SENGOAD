@@ -1,0 +1,18 @@
+---
+velociraptor_server_version: "0.77.3"
+velociraptor_server_linux_archive_sha256: "b4699d7ecfd5c0d656d86379e41f0eb34b0f12c3cb45398f1e747f10844d7930"
+velociraptor_server_windows_msi_sha256: "097dbfa7b0c15d90c051b4f58852cfbe427130d5a8387210833ccaaf86652ddc"
+
+velociraptor_server_release_base_url: "https://github.com/Velocidex/velociraptor/releases/download/v{{ velociraptor_server_version }}"
+velociraptor_server_linux_archive_name: "velociraptor-v{{ velociraptor_server_version }}-linux-amd64-musl.gz"
+velociraptor_server_windows_msi_name: "velociraptor-v{{ velociraptor_server_version }}-windows-amd64.msi"
+
+velociraptor_server_work_dir: /opt/velociraptor
+velociraptor_server_config_path: /etc/velociraptor/server.config.yaml
+velociraptor_server_client_config_path: "{{ velociraptor_server_work_dir }}/client-{{ velociraptor_server_version }}.config.yaml"
+velociraptor_server_admin_password_path: /root/velociraptor-admin-password
+velociraptor_server_admin_user: admin
+
+velociraptor_server_frontend_port: 8000
+velociraptor_server_gui_port: 8889
+velociraptor_server_ssh_port: 22

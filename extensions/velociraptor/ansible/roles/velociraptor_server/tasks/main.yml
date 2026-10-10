@@ -1,0 +1,290 @@
+---
+- name: Validate the Velociraptor server platform
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family == "Debian"
+      - ansible_architecture in ["x86_64", "amd64"]
+    fail_msg: "The Velociraptor extension requires an amd64 Debian-family server."
+
+- name: Detect the provisioning SSH connection
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/printenv
+      - SSH_CONNECTION
+  become: false
+  changed_when: false
+  failed_when: false
+  register: velociraptor_server_ssh_connection
+
+- name: Record server and management addresses
+  ansible.builtin.set_fact:
+    velociraptor_server_address: "{{ ansible_host }}"
+    velociraptor_server_management_address: >-
+      {{ ((velociraptor_server_ssh_connection.stdout | trim)
+          or (velociraptor_server_jumpbox_address + ' 0 0 0')).split()[0] }}
+    velociraptor_server_controller_msi_path: >-
+      /tmp/sengoad-velociraptor-{{ ansible_host | replace('.', '-') }}-{{ velociraptor_server_version }}.msi
+
+- name: Install server prerequisites
+  ansible.builtin.apt:
+    name:
+      - gzip
+      - libcap2-bin
+      - openssl
+      - ufw
+    state: present
+    update_cache: true
+
+- name: Create Velociraptor directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ velociraptor_server_work_dir }}"
+      mode: "0700"
+    - path: /etc/velociraptor
+      mode: "0700"
+    - path: /var/lib/velociraptor
+      mode: "0750"
+    - path: /var/log/velociraptor
+      mode: "0750"
+
+- name: Download the pinned Velociraptor Linux binary
+  ansible.builtin.get_url:
+    url: "{{ velociraptor_server_release_base_url }}/{{ velociraptor_server_linux_archive_name }}"
+    dest: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name }}"
+    checksum: "sha256:{{ velociraptor_server_linux_archive_sha256 }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Decompress the Velociraptor Linux binary
+  ansible.builtin.command:
+    argv:
+      - gzip
+      - --decompress
+      - --keep
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name }}"
+    creates: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+
+- name: Make the Velociraptor Linux binary executable
+  ansible.builtin.file:
+    path: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download the pinned official Windows MSI
+  ansible.builtin.get_url:
+    url: "{{ velociraptor_server_release_base_url }}/{{ velociraptor_server_windows_msi_name }}"
+    dest: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_windows_msi_name }}"
+    checksum: "sha256:{{ velociraptor_server_windows_msi_sha256 }}"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Write the non-secret configuration overlay
+  ansible.builtin.template:
+    src: config-merge.json.j2
+    dest: "{{ velociraptor_server_work_dir }}/config-merge.json"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Check for an existing deployment configuration
+  ansible.builtin.stat:
+    path: "{{ velociraptor_server_config_path }}"
+  register: velociraptor_server_config
+
+- name: Generate deployment PKI and server configuration
+  ansible.builtin.shell: >-
+    umask 077 &&
+    {{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}
+    config generate
+    --merge_file {{ velociraptor_server_work_dir }}/config-merge.json
+    > {{ velociraptor_server_config_path }}
+  when: not velociraptor_server_config.stat.exists
+  changed_when: true
+  no_log: true
+
+- name: Validate the server configuration
+  ansible.builtin.command:
+    argv:
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - --config
+      - "{{ velociraptor_server_config_path }}"
+      - config
+      - show
+  changed_when: false
+  no_log: true
+
+- name: Extract the client configuration
+  ansible.builtin.shell: >-
+    umask 077 &&
+    {{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}
+    --config {{ velociraptor_server_config_path }}
+    config client
+    > {{ velociraptor_server_client_config_path }}
+  args:
+    creates: "{{ velociraptor_server_client_config_path }}"
+  no_log: true
+
+- name: Repack the official MSI with this deployment's client configuration
+  ansible.builtin.command:
+    argv:
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - config
+      - repack
+      - --msi
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_windows_msi_name }}"
+      - "{{ velociraptor_server_client_config_path }}"
+      - "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+    creates: "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+  no_log: true
+
+- name: Build the Velociraptor server package
+  ansible.builtin.command:
+    argv:
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - --config
+      - "{{ velociraptor_server_config_path }}"
+      - debian
+      - server
+      - --output
+      - "{{ velociraptor_server_work_dir }}"
+      - --binary
+      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+    creates: "{{ velociraptor_server_work_dir }}/velociraptor-server-{{ velociraptor_server_version }}.amd64.deb"
+  no_log: true
+
+- name: Install the Velociraptor server package
+  ansible.builtin.apt:
+    deb: "{{ velociraptor_server_work_dir }}/velociraptor-server-{{ velociraptor_server_version }}.amd64.deb"
+    state: present
+
+- name: Ensure the Velociraptor server is running
+  ansible.builtin.systemd:
+    name: velociraptor_server
+    enabled: true
+    state: started
+
+- name: Check for the initial administrator password
+  ansible.builtin.stat:
+    path: "{{ velociraptor_server_admin_password_path }}"
+  register: velociraptor_server_admin_password
+
+- name: Create the initial administrator password
+  ansible.builtin.shell: >-
+    umask 077 && openssl rand -base64 32 > {{ velociraptor_server_admin_password_path }}
+  args:
+    creates: "{{ velociraptor_server_admin_password_path }}"
+  no_log: true
+
+- name: Read the initial administrator password
+  ansible.builtin.slurp:
+    src: "{{ velociraptor_server_admin_password_path }}"
+  register: velociraptor_server_admin_password_file
+  no_log: true
+
+- name: Check whether the initial administrator exists
+  ansible.builtin.stat:
+    path: /etc/velociraptor/.admin-created
+  register: velociraptor_server_admin_marker
+
+- name: Create the initial Velociraptor administrator
+  ansible.builtin.command:
+    argv:
+      - /usr/local/bin/velociraptor
+      - --config
+      - "{{ velociraptor_server_config_path }}"
+      - user
+      - add
+      - --role
+      - administrator
+      - "{{ velociraptor_server_admin_user }}"
+      - "{{ velociraptor_server_admin_password_file.content | b64decode | trim }}"
+  become: true
+  become_user: velociraptor
+  when: >-
+    not velociraptor_server_admin_marker.stat.exists or
+    not velociraptor_server_admin_password.stat.exists
+  changed_when: true
+  notify: Restart Velociraptor server
+  no_log: true
+
+- name: Record administrator initialization
+  ansible.builtin.file:
+    path: /etc/velociraptor/.admin-created
+    state: touch
+    owner: root
+    group: root
+    mode: "0600"
+    modification_time: preserve
+    access_time: preserve
+  when: not velociraptor_server_admin_marker.stat.exists
+
+- name: Apply administrator initialization before connectivity checks
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for the Velociraptor services
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: "{{ item }}"
+    timeout: 60
+  loop:
+    - "{{ velociraptor_server_frontend_port }}"
+    - "{{ velociraptor_server_gui_port }}"
+
+- name: Reset the dedicated server firewall to a managed baseline
+  community.general.ufw:
+    state: reset
+
+- name: Deny unsolicited inbound traffic
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: Allow outbound traffic
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: Allow SSH from the provisioning jump box only
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    src: "{{ velociraptor_server_management_address }}"
+    port: "{{ velociraptor_server_ssh_port }}"
+    comment: SENGOAD jump box SSH
+
+- name: Allow the GUI from the provisioning jump box only
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    src: "{{ velociraptor_server_management_address }}"
+    port: "{{ velociraptor_server_gui_port }}"
+    comment: SENGOAD jump box Velociraptor GUI
+
+- name: Allow client traffic from each Windows target
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    src: "{{ hostvars[item].ansible_host }}"
+    port: "{{ velociraptor_server_frontend_port }}"
+    comment: "Velociraptor client {{ item }}"
+  loop: "{{ groups['velociraptor_clients'] }}"
+
+- name: Enable the host firewall with logging
+  community.general.ufw:
+    state: enabled
+    logging: "on"
+
+- name: Fetch the repacked client MSI to the Ansible controller
+  ansible.builtin.fetch:
+    src: "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+    dest: "{{ velociraptor_server_controller_msi_path }}"
+    flat: true
+  no_log: true

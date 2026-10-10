@@ -1,0 +1,16 @@
+[default]
+{% if provider_name == 'aws' or provider_name == 'azure' %}
+velociraptor ansible_host={{ip_range}}.53 ansible_connection=ssh ansible_user=goadmin ansible_password=3tDb-P7Rz!vQ4nX9 ansible_ssh_common_args='-o StrictHostKeyChecking=no' velociraptor_server_jumpbox_address={{ip_range}}.100
+{% else %}
+velociraptor ansible_host={{ip_range}}.53 ansible_connection=ssh ansible_ssh_common_args='-o StrictHostKeyChecking=no' velociraptor_server_jumpbox_address={{ip_range}}.100
+{% endif %}
+
+[extensions]
+velociraptor
+
+; Recipe associations -------------------
+[velociraptor_server]
+velociraptor
+
+[velociraptor_clients:children]
+domain

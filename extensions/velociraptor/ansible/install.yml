@@ -1,0 +1,25 @@
+---
+- name: Install and secure the Velociraptor server
+  hosts: velociraptor_server
+  become: true
+  roles:
+    - role: velociraptor_server
+      tags: velociraptor_server
+
+- name: Install the Velociraptor client on every Windows target
+  hosts: velociraptor_clients
+  roles:
+    - role: velociraptor_client
+      tags: velociraptor_client
+
+- name: Remove the temporary installer from the Ansible controller
+  hosts: velociraptor_server
+  gather_facts: false
+  tasks:
+    - name: Remove fetched Velociraptor MSI
+      ansible.builtin.file:
+        path: "{{ velociraptor_server_controller_msi_path }}"
+        state: absent
+      delegate_to: localhost
+      become: false
+      tags: velociraptor_client
