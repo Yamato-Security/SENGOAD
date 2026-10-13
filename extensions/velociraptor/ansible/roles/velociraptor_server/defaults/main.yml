@@ -8,10 +8,20 @@ velociraptor_server_linux_archive_name: "velociraptor-v{{ velociraptor_server_ve
 velociraptor_server_windows_msi_name: "velociraptor-v{{ velociraptor_server_version }}-windows-amd64.msi"
 
 velociraptor_server_work_dir: /opt/velociraptor
-velociraptor_server_config_path: /etc/velociraptor/server.config.yaml
+velociraptor_server_binary_path: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+velociraptor_server_config_dir: /etc/velociraptor
+velociraptor_server_config_path: "{{ velociraptor_server_config_dir }}/server.config.yaml"
 velociraptor_server_client_config_path: "{{ velociraptor_server_work_dir }}/client-{{ velociraptor_server_version }}.config.yaml"
+velociraptor_server_client_msi_path: "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+velociraptor_server_package_path: "{{ velociraptor_server_work_dir }}/velociraptor-server-{{ velociraptor_server_version }}.amd64.deb"
+velociraptor_server_datastore_dir: /var/lib/velociraptor
+velociraptor_server_log_dir: /var/log/velociraptor
 velociraptor_server_admin_password_path: /root/velociraptor-admin-password
 velociraptor_server_admin_user: admin
+
+# Service account created by the Velociraptor Debian package postinst.
+velociraptor_server_service_user: velociraptor
+velociraptor_server_service_group: velociraptor
 
 velociraptor_server_frontend_port: 8000
 velociraptor_server_gui_port: 8889

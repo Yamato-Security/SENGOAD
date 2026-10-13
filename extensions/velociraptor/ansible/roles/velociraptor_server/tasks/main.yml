@@ -28,6 +28,8 @@
 - name: Install server prerequisites
   ansible.builtin.apt:
     name:
+      # acl lets Ansible become the unprivileged service account.
+      - acl
       - gzip
       - libcap2-bin
       - openssl
@@ -35,21 +37,27 @@
     state: present
     update_cache: true
 
-- name: Create Velociraptor directories
+- name: Create the Velociraptor working directory
   ansible.builtin.file:
-    path: "{{ item.path }}"
+    path: "{{ velociraptor_server_work_dir }}"
     state: directory
     owner: root
     group: root
+    mode: "0700"
+
+# Ownership is intentionally not managed here: the service account only exists
+# after the server package is installed and takes over these directories below.
+- name: Create the Velociraptor service directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
     mode: "{{ item.mode }}"
   loop:
-    - path: "{{ velociraptor_server_work_dir }}"
+    - path: "{{ velociraptor_server_config_dir }}"
       mode: "0700"
-    - path: /etc/velociraptor
-      mode: "0700"
-    - path: /var/lib/velociraptor
+    - path: "{{ velociraptor_server_datastore_dir }}"
       mode: "0750"
-    - path: /var/log/velociraptor
+    - path: "{{ velociraptor_server_log_dir }}"
       mode: "0750"
 
 - name: Download the pinned Velociraptor Linux binary
@@ -68,11 +76,11 @@
       - --decompress
       - --keep
       - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name }}"
-    creates: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+    creates: "{{ velociraptor_server_binary_path }}"
 
 - name: Make the Velociraptor Linux binary executable
   ansible.builtin.file:
-    path: "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+    path: "{{ velociraptor_server_binary_path }}"
     owner: root
     group: root
     mode: "0755"
@@ -99,13 +107,16 @@
     path: "{{ velociraptor_server_config_path }}"
   register: velociraptor_server_config
 
+# Write to a temporary file and move it into place so a failed generation never
+# leaves an empty configuration behind that later runs would treat as valid.
 - name: Generate deployment PKI and server configuration
   ansible.builtin.shell: >-
     umask 077 &&
-    {{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}
+    {{ velociraptor_server_binary_path }}
     config generate
     --merge_file {{ velociraptor_server_work_dir }}/config-merge.json
-    > {{ velociraptor_server_config_path }}
+    > {{ velociraptor_server_config_path }}.tmp &&
+    mv {{ velociraptor_server_config_path }}.tmp {{ velociraptor_server_config_path }}
   when: not velociraptor_server_config.stat.exists
   changed_when: true
   no_log: true
@@ -113,7 +124,7 @@
 - name: Validate the server configuration
   ansible.builtin.command:
     argv:
-      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - "{{ velociraptor_server_binary_path }}"
       - --config
       - "{{ velociraptor_server_config_path }}"
       - config
@@ -124,10 +135,11 @@
 - name: Extract the client configuration
   ansible.builtin.shell: >-
     umask 077 &&
-    {{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}
+    {{ velociraptor_server_binary_path }}
     --config {{ velociraptor_server_config_path }}
     config client
-    > {{ velociraptor_server_client_config_path }}
+    > {{ velociraptor_server_client_config_path }}.tmp &&
+    mv {{ velociraptor_server_client_config_path }}.tmp {{ velociraptor_server_client_config_path }}
   args:
     creates: "{{ velociraptor_server_client_config_path }}"
   no_log: true
@@ -135,20 +147,20 @@
 - name: Repack the official MSI with this deployment's client configuration
   ansible.builtin.command:
     argv:
-      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - "{{ velociraptor_server_binary_path }}"
       - config
       - repack
       - --msi
       - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_windows_msi_name }}"
       - "{{ velociraptor_server_client_config_path }}"
-      - "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
-    creates: "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+      - "{{ velociraptor_server_client_msi_path }}"
+    creates: "{{ velociraptor_server_client_msi_path }}"
   no_log: true
 
 - name: Build the Velociraptor server package
   ansible.builtin.command:
     argv:
-      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
+      - "{{ velociraptor_server_binary_path }}"
       - --config
       - "{{ velociraptor_server_config_path }}"
       - debian
@@ -156,14 +168,63 @@
       - --output
       - "{{ velociraptor_server_work_dir }}"
       - --binary
-      - "{{ velociraptor_server_work_dir }}/{{ velociraptor_server_linux_archive_name | regex_replace('\\.gz$', '') }}"
-    creates: "{{ velociraptor_server_work_dir }}/velociraptor-server-{{ velociraptor_server_version }}.amd64.deb"
+      - "{{ velociraptor_server_binary_path }}"
+    creates: "{{ velociraptor_server_package_path }}"
   no_log: true
 
 - name: Install the Velociraptor server package
   ansible.builtin.apt:
-    deb: "{{ velociraptor_server_work_dir }}/velociraptor-server-{{ velociraptor_server_version }}.amd64.deb"
+    deb: "{{ velociraptor_server_package_path }}"
     state: present
+
+# The package postinst creates the service account but leaves the log directory
+# (and anything the root-run build steps touched in the datastore) owned by
+# root, which crashes the server on its first write.
+- name: Give the service account its directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ velociraptor_server_service_user }}"
+    group: "{{ velociraptor_server_service_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ velociraptor_server_config_dir }}"
+      mode: "0700"
+    - path: "{{ velociraptor_server_datastore_dir }}"
+      mode: "0750"
+    - path: "{{ velociraptor_server_log_dir }}"
+      mode: "0750"
+  notify: Restart Velociraptor server
+
+- name: Find service files not owned by the service account
+  ansible.builtin.command:
+    argv:
+      - find
+      - "{{ velociraptor_server_config_dir }}"
+      - "{{ velociraptor_server_datastore_dir }}"
+      - "{{ velociraptor_server_log_dir }}"
+      - "!"
+      - -user
+      - "{{ velociraptor_server_service_user }}"
+      - -o
+      - "!"
+      - -group
+      - "{{ velociraptor_server_service_group }}"
+  changed_when: false
+  register: velociraptor_server_foreign_files
+
+- name: Give the service account its files
+  ansible.builtin.command:
+    argv:
+      - chown
+      - --recursive
+      - "{{ velociraptor_server_service_user }}:{{ velociraptor_server_service_group }}"
+      - "{{ velociraptor_server_config_dir }}"
+      - "{{ velociraptor_server_datastore_dir }}"
+      - "{{ velociraptor_server_log_dir }}"
+  when: velociraptor_server_foreign_files.stdout | length > 0
+  changed_when: true
+  notify: Restart Velociraptor server
 
 - name: Ensure the Velociraptor server is running
   ansible.builtin.systemd:
@@ -191,7 +252,7 @@
 
 - name: Check whether the initial administrator exists
   ansible.builtin.stat:
-    path: /etc/velociraptor/.admin-created
+    path: "{{ velociraptor_server_config_dir }}/.admin-created"
   register: velociraptor_server_admin_marker
 
 - name: Create the initial Velociraptor administrator
@@ -207,7 +268,7 @@
       - "{{ velociraptor_server_admin_user }}"
       - "{{ velociraptor_server_admin_password_file.content | b64decode | trim }}"
   become: true
-  become_user: velociraptor
+  become_user: "{{ velociraptor_server_service_user }}"
   when: >-
     not velociraptor_server_admin_marker.stat.exists or
     not velociraptor_server_admin_password.stat.exists
@@ -217,10 +278,10 @@
 
 - name: Record administrator initialization
   ansible.builtin.file:
-    path: /etc/velociraptor/.admin-created
+    path: "{{ velociraptor_server_config_dir }}/.admin-created"
     state: touch
-    owner: root
-    group: root
+    owner: "{{ velociraptor_server_service_user }}"
+    group: "{{ velociraptor_server_service_group }}"
     mode: "0600"
     modification_time: preserve
     access_time: preserve
@@ -284,7 +345,7 @@
 
 - name: Fetch the repacked client MSI to the Ansible controller
   ansible.builtin.fetch:
-    src: "{{ velociraptor_server_work_dir }}/velociraptor-client-{{ velociraptor_server_version }}.msi"
+    src: "{{ velociraptor_server_client_msi_path }}"
     dest: "{{ velociraptor_server_controller_msi_path }}"
     flat: true
   no_log: true
