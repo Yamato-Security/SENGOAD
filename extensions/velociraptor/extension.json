@@ -1,0 +1,11 @@
+{
+    "name": "velociraptor",
+    "description": "Add a Velociraptor server and deploy its client to every Windows machine",
+    "machines": [
+        "velociraptor"
+    ],
+    "compatibility": [
+        "*"
+    ],
+    "impact": "add a Linux Velociraptor server and a Velociraptor service on all Windows machines"
+}

@@ -6,3 +6,4 @@
 - [lx01](lx01.md) : Add a linux vm to GOAD or GOAD-Light lab
 - [wazuh](wazuh.md) : Add wazuh EDR to visualize alerts
 - [elk](elk.md) : Add an ELK to collect and read the logs
+- [velociraptor](velociraptor.md) : Add a secured Velociraptor server and deploy clients to every Windows target

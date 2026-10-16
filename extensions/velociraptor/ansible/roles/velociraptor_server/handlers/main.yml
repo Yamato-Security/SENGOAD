@@ -1,0 +1,5 @@
+---
+- name: Restart Velociraptor server
+  ansible.builtin.systemd:
+    name: velociraptor_server
+    state: restarted
