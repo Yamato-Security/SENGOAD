@@ -1,0 +1,10 @@
+---
+- name: "Windows | Get the current timezone"
+  ansible.windows.win_shell: (Get-TimeZone).Id
+  changed_when: false
+  register: timezone_current
+
+- name: "Windows | Set the system timezone"
+  ansible.windows.win_shell: Set-TimeZone -Id "{{ timezone }}"
+  when: timezone_current.stdout | trim != timezone
+  changed_when: true
