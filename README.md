@@ -1,5 +1,5 @@
 <div align="center">
-  <h1><img alt="SENGOAD (Sengoku Game Of Active Directory)" src="./docs/mkdocs/docs/img/logo_GOAD3.png"></h1>
+  <h1><img alt="SENGOAD cyber-samurai logo" width="720" src="./docs/mkdocs/docs/img/logo_SENGOAD.png"></h1>
   <br>
 </div>
 
