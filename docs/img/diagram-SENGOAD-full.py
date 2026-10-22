@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Render the SENGOAD full network diagram and lab-family overview.
+"""Render a neutral AD topology and the SENGOAD lab-family overview.
 
 Editable source for docs/img/diagram-SENGOAD-full.png and the legacy
 diagram-GOADv3-full.png paths used by the README and MkDocs. Regenerate with:
     pip install pillow            # needs a CJK font (Noto Sans CJK JP)
     python3 docs/img/diagram-SENGOAD-full.py
 Set SENGOAD_FONT_DIR when the Noto Sans CJK files are installed elsewhere.
+Set SENGOAD_AD_ONLY=1 to render only the neutral detailed topology.
 Names follow docs/SENGOAD_mapping_EN.md and ad/SENGOAD/data/inventory.
 """
 import math
 import os
+import subprocess
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 2012, 1300
@@ -20,6 +23,7 @@ d = ImageDraw.Draw(img)
 FONT_DIR = os.environ.get("SENGOAD_FONT_DIR", "/usr/share/fonts/opentype/noto")
 NOTO = os.path.join(FONT_DIR, "NotoSansCJK-Regular.ttc")
 NOTOB = os.path.join(FONT_DIR, "NotoSansCJK-Bold.ttc")
+AD_ONLY = os.environ.get("SENGOAD_AD_ONLY") == "1"
 _fc = {}
 def F(size, bold=False):
     key = (size, bold)
@@ -184,14 +188,15 @@ def block(cx, y, lines, gap=4):
 # ===================================================================
 # SCOPE BOXES (draw first, behind)
 # ===================================================================
-dashed_rrect(28, 64, 1984, 1248, FULL, w=3, r=34, dash=18, gap=13)
-text(1006, 1226, "SENGOAD", F(30, True), FULL, anchor="mm")
+if not AD_ONLY:
+    dashed_rrect(28, 64, 1984, 1248, FULL, w=3, r=34, dash=18, gap=13)
+    text(1006, 1226, "SENGOAD", F(30, True), FULL, anchor="mm")
 
-dashed_rrect(70, 92, 1335, 1208, LIGHT, w=3, r=30, dash=16, gap=12)
-text(440, 1196, "SENGOAD-Light", F(24, True), LIGHT, anchor="mm")
+    dashed_rrect(70, 92, 1335, 1208, LIGHT, w=3, r=30, dash=16, gap=12)
+    text(440, 1196, "SENGOAD-Light", F(24, True), LIGHT, anchor="mm")
 
-dashed_rrect(560, 118, 1132, 560, MINI, w=3, r=26, dash=14, gap=11)
-text(795, 540, "SENGOAD-Mini", F(24, True), MINI, anchor="mm")
+    dashed_rrect(560, 118, 1132, 560, MINI, w=3, r=26, dash=14, gap=11)
+    text(795, 540, "SENGOAD-Mini", F(24, True), MINI, anchor="mm")
 
 # ===================================================================
 # DOMAIN TRIANGLES
@@ -312,7 +317,7 @@ person(335, 470, "takeda.shingen", "武田信玄",
        [("bot 5min (LLMNR)", (70, 120, 180)), ("domain admin", RED)],
        P_KOFU, RED, "admin", bot=True, extra_targets=[(P_SHIRA, RED, "admin", False)])
 person(140, 690, "takeda.katsuyori", "武田勝頼", [("bot 3min (LLMNR)", (70, 120, 180))],
-       P_SHIRA, GREEN, "RDP (active)", bot=True, dashed=True)
+       P_SHIRA, GREEN, "RDP (active)", bot=True, dashed=not AD_ONLY)
 group(250, 830); text(250, 858, "Takeda (武田)", F(14), (40, 40, 40), anchor="mm")
 arrow((288, 826), P_KOFU, BLUE, 2, label="RDP", r1=22, r2=30, lf=F(13))
 arrow((285, 845), P_SHIRA, BLUE, 2, label="RDP", r1=22, r2=34, lf=F(13))
@@ -337,7 +342,12 @@ person(1665, 1150, "honda.tadatomo", "本多忠朝", [],
 # ===================================================================
 # TITLE + LEGEND
 # ===================================================================
-text(1006, 36, "SENGOAD — 戦国 GOAD  ·  full lab (5 VMs)", F(26, True), BLACK, anchor="mm")
+title = (
+    "Active Directory Environment"
+    if AD_ONLY
+    else "SENGOAD — 戦国 GOAD  ·  full lab (5 VMs)"
+)
+text(1006, 36, title, F(26, True), BLACK, anchor="mm")
 
 # legend (white backing so it sits clear of the dashed scope borders)
 lx, ly = 78, 132
@@ -354,7 +364,11 @@ for i, (lab, c) in enumerate(items):
 
 here = os.path.dirname(os.path.abspath(__file__))
 out = img.resize((W, H), Image.LANCZOS)
-out.save(os.path.join(here, "diagram-SENGOAD-full.png"))
+if AD_ONLY:
+    target = os.path.join(here, "diagram-SENGOAD-full.png")
+    out.save(target)
+    print("saved", out.size, "to", target)
+    raise SystemExit
 
 # ===================================================================
 # LAB-FAMILY OVERVIEW WITH EXTENSIONS
@@ -411,4 +425,9 @@ legacy_targets = [
 for target in legacy_targets:
     overview_out.save(target)
 
-print("saved", out.size, "and", overview_out.size)
+child_env = os.environ.copy()
+child_env["SENGOAD_AD_ONLY"] = "1"
+# Render the neutral topology in a second pass so the overview above keeps its
+# branded scope boxes and remains backward-compatible at the legacy path.
+subprocess.run([sys.executable, os.path.abspath(__file__)], check=True, env=child_env)
+print("saved branded overview", overview_out.size, "and neutral topology", out.size)
