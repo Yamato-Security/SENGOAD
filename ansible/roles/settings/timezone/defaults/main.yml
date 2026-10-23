@@ -1,0 +1,3 @@
+---
+# Windows time zone id (list them on a host with: tzutil /l)
+timezone: "Tokyo Standard Time"
