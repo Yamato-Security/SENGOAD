@@ -1,4 +1,5 @@
-$task = '/c powershell New-PSDrive -Name "Public" -PSProvider "FileSystem" -Root "\\Bravos\private"'
+# Intentionally misspelled Sakai so failed DNS resolution triggers LLMNR/NBT-NS.
+$task = '/c powershell New-PSDrive -Name "Public" -PSProvider "FileSystem" -Root "\\Saki\private"'
 $repeat = (New-TimeSpan -Minutes 2)
 $taskName = "responder_bot"
 $user = "kai.yamato.local\takeda.katsuyori"

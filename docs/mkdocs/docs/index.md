@@ -4,7 +4,7 @@ title: Game Of Active Directory
 #
 
 <div align="center">
-<img alt="GOAD" src="./img/logo_GOAD3.png">
+<img alt="SENGOAD cyber-samurai logo" width="720" src="./img/logo_SENGOAD.png">
 </div>
 
 Welcome to [GOAD](https://github.com/Orange-Cyberdefense/GOAD/) documentation !
