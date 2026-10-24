@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Render the SENGOAD full network diagram and lab-family overview.
+"""Render a neutral AD topology and the SENGOAD lab-family overview.
 
 Editable source for docs/img/diagram-SENGOAD-full.png and the legacy
 diagram-GOADv3-full.png paths used by the README and MkDocs. Regenerate with:
     pip install pillow            # needs a CJK font (Noto Sans CJK JP)
     python3 docs/img/diagram-SENGOAD-full.py
 Set SENGOAD_FONT_DIR when the Noto Sans CJK files are installed elsewhere.
+Set SENGOAD_AD_ONLY=1 to render only the neutral detailed topology.
 Names follow docs/SENGOAD_mapping_EN.md and ad/SENGOAD/data/inventory.
 """
 import math
 import os
+import subprocess
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 2012, 1300
@@ -20,6 +23,7 @@ d = ImageDraw.Draw(img)
 FONT_DIR = os.environ.get("SENGOAD_FONT_DIR", "/usr/share/fonts/opentype/noto")
 NOTO = os.path.join(FONT_DIR, "NotoSansCJK-Regular.ttc")
 NOTOB = os.path.join(FONT_DIR, "NotoSansCJK-Bold.ttc")
+AD_ONLY = os.environ.get("SENGOAD_AD_ONLY") == "1"
 _fc = {}
 def F(size, bold=False):
     key = (size, bold)
@@ -44,6 +48,10 @@ TRI = (35, 35, 35)
 MINI = (55, 180, 75)
 LIGHT = (124, 80, 222)
 FULL = (50, 92, 222)
+YAMATO_FOREST = (62, 91, 158)
+YAMATO_FOREST_FILL = (248, 250, 255)
+AKI_FOREST = (170, 104, 43)
+AKI_FOREST_FILL = (255, 251, 244)
 
 def text(x, y, s, font, fill=BLACK, anchor="mm"):
     d.text((S(x), S(y)), s, font=font, fill=fill, anchor=anchor)
@@ -182,16 +190,33 @@ def block(cx, y, lines, gap=4):
     return yy
 
 # ===================================================================
-# SCOPE BOXES (draw first, behind)
+# SCOPE / FOREST BOXES (draw first, behind)
 # ===================================================================
-dashed_rrect(28, 64, 1984, 1248, FULL, w=3, r=34, dash=18, gap=13)
-text(1006, 1226, "SENGOAD", F(30, True), FULL, anchor="mm")
+if not AD_ONLY:
+    dashed_rrect(28, 64, 1984, 1248, FULL, w=3, r=34, dash=18, gap=13)
+    text(1006, 1226, "SENGOAD", F(30, True), FULL, anchor="mm")
 
-dashed_rrect(70, 92, 1335, 1208, LIGHT, w=3, r=30, dash=16, gap=12)
-text(440, 1196, "SENGOAD-Light", F(24, True), LIGHT, anchor="mm")
+    dashed_rrect(70, 92, 1335, 1208, LIGHT, w=3, r=30, dash=16, gap=12)
+    text(440, 1196, "SENGOAD-Light", F(24, True), LIGHT, anchor="mm")
 
-dashed_rrect(560, 118, 1132, 560, MINI, w=3, r=26, dash=14, gap=11)
-text(795, 540, "SENGOAD-Mini", F(24, True), MINI, anchor="mm")
+    dashed_rrect(560, 118, 1132, 560, MINI, w=3, r=26, dash=14, gap=11)
+    text(795, 540, "SENGOAD-Mini", F(24, True), MINI, anchor="mm")
+else:
+    d.rounded_rectangle(
+        [S(28), S(64), S(1318), S(1248)],
+        radius=S(30), fill=YAMATO_FOREST_FILL, outline=YAMATO_FOREST,
+        width=int(3 * SS),
+    )
+    d.rounded_rectangle(
+        [S(1338), S(64), S(1984), S(1248)],
+        radius=S(30), fill=AKI_FOREST_FILL, outline=AKI_FOREST,
+        width=int(3 * SS),
+    )
+    text(673, 90, "Yamato forest  ·  2 domains", F(20, True), YAMATO_FOREST)
+    text(1661, 90, "Aki forest  ·  1 domain", F(20, True), AKI_FOREST)
+
+YAMATO_APEX_Y = 130 if AD_ONLY else 60
+AKI_DX = 150 if AD_ONLY else 0
 
 # ===================================================================
 # DOMAIN TRIANGLES
@@ -202,7 +227,7 @@ def triangle(apex, bl, br, w=2):
     d.line([S(bl[0]), S(bl[1]), S(br[0]), S(br[1])], fill=TRI, width=int(w*SS))
 
 # Yamato (center, tall)
-triangle((1006, 60), (720, 770), (1300, 770))
+triangle((1006, YAMATO_APEX_Y), (720, 770), (1300, 770))
 text(1010, 792, "yamato.local", F(21, True), BLACK, anchor="mm")
 text(1010, 814, "大和  ·  YAMATO", F(17, False), (80,80,80), anchor="mm")
 # Kai (left)
@@ -210,9 +235,9 @@ triangle((565, 705), (300, 1120), (830, 1120))
 text(565, 1138, "kai.yamato.local", F(20, True), BLACK, anchor="mm")
 text(565, 1159, "甲斐  ·  KAI", F(16, False), (80,80,80), anchor="mm")
 # Aki (right)
-triangle((1450, 705), (1235, 1120), (1665, 1120))
-text(1450, 1138, "aki.local", F(20, True), BLACK, anchor="mm")
-text(1450, 1159, "安芸  ·  AKI", F(16, False), (80,80,80), anchor="mm")
+triangle((1450 + AKI_DX, 705), (1235 + AKI_DX, 1120), (1665 + AKI_DX, 1120))
+text(1450 + AKI_DX, 1138, "aki.local", F(20, True), BLACK, anchor="mm")
+text(1450 + AKI_DX, 1159, "安芸  ·  AKI", F(16, False), (80,80,80), anchor="mm")
 
 # ===================================================================
 # VMs
@@ -248,9 +273,9 @@ block(575, 1036, [
 ])
 
 # DC03 hiroshima  (custom templates live on the AKI-CA at sakai; hiroshima is not a CA)
-P_HIRO = (1450, 830)
+P_HIRO = (1450 + AKI_DX, 830)
 server(*P_HIRO)
-block(1450, 866, [
+block(P_HIRO[0], 866, [
     ("DC03 — hiroshima  (広島)", 17, True, BLACK),
     ("192.168.56.12 · Windows Server 2016", 14, False, (60,60,60)),
     ("ntlm downgrade · LAPS", 13, False, (120,60,60)),
@@ -258,9 +283,9 @@ block(1450, 866, [
 ])
 
 # SRV03 sakai
-P_SAKAI = (1450, 1000)
+P_SAKAI = (1450 + AKI_DX, 1000)
 server_adcs(*P_SAKAI)
-block(1450, 1036, [
+block(P_SAKAI[0], 1036, [
     ("SRV03 — sakai  (堺)", 16, True, BLACK),
     ("192.168.56.23 · Win Server 2016 · LAPS", 13, False, (60,60,60)),
     ("ADCS — AKI-CA", 13, True, (150,90,10)),
@@ -270,13 +295,19 @@ block(1450, 1036, [
 # ===================================================================
 # TRUSTS + MSSQL link
 # ===================================================================
-arrow((830, 740), (640, 760), BLACK, 2, label="trust", bidir=True, r1=4, r2=4, loff=(6,-12), lf=F(14))
-arrow((1180, 740), (1380, 760), BLACK, 2, label="trust", bidir=True, r1=4, r2=4, loff=(-6,-12), lf=F(14))
+parent_trust_label = "parent-child trust" if AD_ONLY else "trust"
+forest_trust_label = "forest trust" if AD_ONLY else "trust"
+forest_trust_target = (1530, 760) if AD_ONLY else (1380, 760)
+arrow((830, 740), (640, 760), BLACK, 2, label=parent_trust_label,
+      bidir=True, r1=4, r2=4, loff=(6,-12), lf=F(14))
+arrow((1180, 740), forest_trust_target, BLACK, 2, label=forest_trust_label,
+      bidir=True, r1=4, r2=4, loff=(-6,-12), lf=F(14))
 # mssql trusted link between the two servers
 a, b = shorten(P_SHIRA, P_SAKAI, 32, 32)
 line(a, b, BLACK, 2)
 arrowhead(a, b, BLACK); arrowhead(b, a, BLACK)
-text(1012, 982, "MSSQL trusted link", F(14), BLACK, anchor="mm")
+mssql_label_x = 1088 if AD_ONLY else 1012
+text(mssql_label_x, 982, "MSSQL trusted link", F(14), BLACK, anchor="mm")
 
 # ===================================================================
 # USERS  (login mono-ish ASCII + kanji display)
@@ -312,7 +343,7 @@ person(335, 470, "takeda.shingen", "武田信玄",
        [("bot 5min (LLMNR)", (70, 120, 180)), ("domain admin", RED)],
        P_KOFU, RED, "admin", bot=True, extra_targets=[(P_SHIRA, RED, "admin", False)])
 person(140, 690, "takeda.katsuyori", "武田勝頼", [("bot 3min (LLMNR)", (70, 120, 180))],
-       P_SHIRA, GREEN, "RDP (active)", bot=True, dashed=True)
+       P_SHIRA, GREEN, "RDP (active)", bot=True, dashed=not AD_ONLY)
 group(250, 830); text(250, 858, "Takeda (武田)", F(14), (40, 40, 40), anchor="mm")
 arrow((288, 826), P_KOFU, BLUE, 2, label="RDP", r1=22, r2=30, lf=F(13))
 arrow((285, 845), P_SHIRA, BLUE, 2, label="RDP", r1=22, r2=34, lf=F(13))
@@ -329,17 +360,23 @@ group(1880, 720); text(1880, 748, "Mori (毛利)", F(14), (40, 40, 40), anchor="
 arrow((1845, 716), P_HIRO, BLUE, 2, label="RDP", r1=22, r2=30, lf=F(13))
 group(1880, 905); text(1880, 933, "KibaShu (騎馬衆)", F(14), (40, 40, 40), anchor="mm")
 arrow((1843, 912), P_SAKAI, BLUE, 2, label="RDP", r1=22, r2=30, lf=F(13))
-person(1858, 1045, "date.masamune", "伊達政宗", [("admin · mssql_admin · ECS4", RED)],
+date_position = (1880, 980) if AD_ONLY else (1858, 1045)
+person(*date_position, "date.masamune", "伊達政宗", [("admin · mssql_admin · ECS4", RED)],
        P_SAKAI, RED, "admin")
-person(1665, 1150, "honda.tadatomo", "本多忠朝", [],
+person(1665 + AKI_DX, 1150, "honda.tadatomo", "本多忠朝", [],
        P_SAKAI, ORANGE, "mapping_mssql_trust", loff=(70, 30))
 
 # ===================================================================
 # TITLE + LEGEND
 # ===================================================================
-text(1006, 36, "SENGOAD — 戦国 GOAD  ·  full lab (5 VMs)", F(26, True), BLACK, anchor="mm")
+title = (
+    "Active Directory Environment  ·  2 forests / 3 domains"
+    if AD_ONLY
+    else "SENGOAD — 戦国 GOAD  ·  full lab (5 VMs)"
+)
+text(1006, 36, title, F(26, True), BLACK, anchor="mm")
 
-# legend (white backing so it sits clear of the dashed scope borders)
+# Legend backing keeps the key distinct from both scope and forest backgrounds.
 lx, ly = 78, 132
 d.rounded_rectangle([S(54), S(96), S(350), S(288)], radius=S(10),
                     fill="white", outline=(170, 170, 170), width=int(1.5 * SS))
@@ -354,7 +391,11 @@ for i, (lab, c) in enumerate(items):
 
 here = os.path.dirname(os.path.abspath(__file__))
 out = img.resize((W, H), Image.LANCZOS)
-out.save(os.path.join(here, "diagram-SENGOAD-full.png"))
+if AD_ONLY:
+    target = os.path.join(here, "diagram-SENGOAD-full.png")
+    out.save(target)
+    print("saved", out.size, "to", target)
+    raise SystemExit
 
 # ===================================================================
 # LAB-FAMILY OVERVIEW WITH EXTENSIONS
@@ -411,4 +452,9 @@ legacy_targets = [
 for target in legacy_targets:
     overview_out.save(target)
 
-print("saved", out.size, "and", overview_out.size)
+child_env = os.environ.copy()
+child_env["SENGOAD_AD_ONLY"] = "1"
+# Render the neutral topology in a second pass so the overview above keeps its
+# branded scope boxes and remains backward-compatible at the legacy path.
+subprocess.run([sys.executable, os.path.abspath(__file__)], check=True, env=child_env)
+print("saved branded overview", overview_out.size, "and neutral topology", out.size)
