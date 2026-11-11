@@ -38,3 +38,6 @@ docs/site/
 docs/olddocs/
 docs/mkdocs/site/
 scripts/archives/
+
+# Local environment files may contain secrets.
+.env
