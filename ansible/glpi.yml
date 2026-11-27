@@ -34,7 +34,7 @@
       name: "Active_Directory-ldap-{{lab.hosts[dict_key].domain}}"
       host: "{{dc_fqdn}}"
       basedn: "{{lab.hosts[dc_key].path}}"
-      rootdn: "CN=sunfyre,CN=Users,{{lab.hosts[dc_key].path}}"
+      rootdn: "CN=kinryu,CN=Users,{{lab.hosts[dc_key].path}}"
       port: 636
       glpi_user_password: "BSno5DP4tjJ4jIu8is3B"
     glpi_local_users_pass: "glPwnM33FTW!"

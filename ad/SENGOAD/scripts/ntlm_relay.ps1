@@ -1,4 +1,5 @@
-$task = '/c powershell New-PSDrive -Name "Public" -PSProvider "FileSystem" -Root "\\Meren\Private"'
+# Intentionally misspelled Hiroshima so failed DNS resolution triggers LLMNR/NBT-NS.
+$task = '/c powershell New-PSDrive -Name "Public" -PSProvider "FileSystem" -Root "\\Hiroshma\Private"'
 $repeat = (New-TimeSpan -Minutes 5)
 $taskName = "ntlm_bot"
 $user = "kai.yamato.local\takeda.shingen"

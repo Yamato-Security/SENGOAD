@@ -11,7 +11,7 @@ glpi_force_reinstall: false
 glpi_ldap:
   name: "ldap"
   host: "192.168.10.10"
-  basedn: "DC=balerion,DC=dracarys,DC=lab"
-  rootdn: "sunfyre@balerion.dracarys.lab"
+  basedn: "DC=ryujin,DC=ryuen,DC=lab"
+  rootdn: "kinryu@ryujin.ryuen.lab"
   port: 389
   glpi_user_password: "XXXX"
